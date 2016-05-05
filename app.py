@@ -45,7 +45,7 @@ class Question(db.Model):
 
 class Response(db.Model, JsondModel):
     __tablename__ = 'responses'
-    external_attrs = ['answer', 'cat', 'feedback', 'id', 'score']
+    external_attrs = ['answer', 'cat', 'feedback', 'id', 'score', 'info']
 
     id = db.Column(db.Integer, primary_key=True)
     answer = db.Column(db.String())
@@ -62,6 +62,9 @@ class Response(db.Model, JsondModel):
     def __repr__(self):
         return '<id {}>'.format(self.id)
 
+    @property
+    def info(self):
+        return {'unit':self.question.unit.title, 'question': self.question.prompt}
     @property
     def score(self):
         return {'methods':95, 'syntax':20}
