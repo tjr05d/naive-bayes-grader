@@ -55,8 +55,10 @@ class Question(db.Model, JsondModel):
     def __repr__(self):
         return '<id {}>'.format(self.id)
 
+
 class Category(db.Model, JsondModel):
     __tablename__ = 'categories'
+    external_attrs = ['title', 'feedback', 'question_id', 'responses']
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String())
@@ -64,20 +66,22 @@ class Category(db.Model, JsondModel):
     question_id = db.Column(db.Integer, db.ForeignKey('questions.id'))
     responses = db.relationship('Response', backref='category', lazy='dynamic')
 
-    def __init__(self, title, feedback, questions_id):
+    def __init__(self, title, feedback, question_id):
         self.title = title
         self.feedback = feedback
-        self.questions_id = questions_id
+        self.question_id = question_id
 
     def __repr__(self):
         return '<id {}>'.format(self.id)
 
-
+    @property
+    def responses(self):
+        return {'unit':self.question.unit.title, 'question': self.question.title}
 
 class Response(db.Model, JsondModel):
     __tablename__ = 'responses'
-    external_attrs = ['answer', 'cat', 'feedback', 'id', 'active', 'score', 'info', 'classify_response']
-    dumb_ass_attrs= ['answer','cat', 'feedback', 'id']
+    external_attrs = ['answer', 'categories_id', 'id', 'active', 'info', 'classify_response']
+    dumb_ass_attrs= ['answer','categories_id', 'id']
 
     id = db.Column(db.Integer, primary_key=True)
     answer = db.Column(db.Text)
@@ -112,11 +116,13 @@ class Response(db.Model, JsondModel):
         training_data = []
         #loop to take the info from the list and create the tuples that go in the training data array
         for data_point in training_responses:
-            training_data.append((data_point["answer"], data_point["cat"]))
+            training_data.append((data_point["answer"], data_point["categories_id"]))
         #creates the classifier for the response that is recieved
         question = NaiveBayesClassifier(training_data)
         #classiifies the response into a category based on probability
         category_decision = question.classify(test_response)
+        #get the category object that belongs to that response
+        category_object = Category.query.get(int(category_decision))
         #gets the probability that the response falls in one of the categories
         prob_cat = question.prob_classify(test_response)
         #loop to return the prob that the response falls in each of the categories
@@ -125,11 +131,7 @@ class Response(db.Model, JsondModel):
         for cat in question.labels():
             cat_probabilities.append((cat, prob_cat.prob(cat)))
         #return a hash with the category picked as well as the probabilities fo all the categories of the classifier
-        return {'category' : category_decision, 'probabilities' : cat_probabilities}
-
-    @property
-    def score(self):
-        return {'methods':95, 'syntax':20}
+        return {'category' : category_object.title, 'probabilities' : cat_probabilities}
 
 #responses routes
 @app.route('/grader/api/v1.0/responses', methods=['GET'])
@@ -151,8 +153,8 @@ def create_response():
     response = Response(
         answer= request.json['answer'],
         active = False,
-        cat= request.json['cat'],
-        feedback= request.json['feedback']
+        categories_id= int(request.json['category_id']),
+        questions_id= int(request.json['question_id'])
         )
     db.session.add(response)
     db.session.commit()
@@ -172,12 +174,12 @@ def get_category(category_id):
 
 @app.route('/grader/api/v1.0/categories', methods=['POST'])
 def create_category():
-    if not request.json or not 'answer' in request.json:
+    if not request.json or not 'title' in request.json:
         abort(400)
     category = Category(
         title= request.json['title'],
         feedback= request.json['feedback'],
-        question_id= request.json['question_id']
+        question_id= int(request.json['question_id'])
         )
     db.session.add(category)
     db.session.commit()
