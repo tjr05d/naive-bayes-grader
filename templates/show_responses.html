@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block body %}
+    <form action="{{ url_for('create_response') }}" method=post class=add-response>
+      <dl>
+        <dt>Answer:
+        <dd><input type=text size=30 name=answer>
+        <dt>Category ID:
+        <dd><input type=text name=category_id></input>
+        <dt>Question ID:
+        <dd><input type=text name=question_id></input>
+        <dd><input type=submit value=grade>
+      </dl>
+    </form>
+  <ul class=responses>
+  {% for response in responses %}
+    <li><h2>{{ response.answer }}</h2>{{ response.classify_response }}</li>
+  {% endfor %}
+  </ul>
+{% endblock %}

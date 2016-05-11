@@ -1,6 +1,7 @@
-from flask import Flask, request, jsonify, abort, make_response, json
+from flask import Flask, request, jsonify, abort, make_response, json, render_template
 from flask.ext.sqlalchemy import SQLAlchemy
 from models import *
+from views import *
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/grader_api_dev'
@@ -9,7 +10,9 @@ db = SQLAlchemy(app)
 #responses routes
 @app.route('/grader/api/v1.0/responses', methods=['GET'])
 def get_responses():
-    return jsonify({'responses' : prepare_index_json(Response)})
+    responses= Response.query.all()
+    # jsonify({'responses' : prepare_index_json(Response)})
+    return render_template('show_responses.html', responses = responses)
 
 
 @app.route('/grader/api/v1.0/responses/<int:response_id>', methods=['GET'])
@@ -21,13 +24,14 @@ def get_response(response_id):
 
 @app.route('/grader/api/v1.0/responses', methods=['POST'])
 def create_response():
-    if not request.json or not 'answer' in request.json:
+    print(request.form['answer'])
+    if not request.form or not 'answer' in request.form:
         abort(400)
     response = Response(
-        answer= request.json['answer'],
+        answer= request.form['answer'],
         active = False,
-        categories_id= int(request.json['category_id']),
-        questions_id= int(request.json['question_id'])
+        categories_id= int(request.form['category_id']),
+        questions_id= int(request.form['question_id'])
         )
     db.session.add(response)
     db.session.commit()
