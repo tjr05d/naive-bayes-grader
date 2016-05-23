@@ -1,9 +1,15 @@
 <!doctype html>
 <title>SKYNET</title>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
-<div class=page>
-  <h1>SKYNET</h1>
+<!-- <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}"> -->
+<!-- Compiled and minified CSS -->
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script src="{{url_for('static', filename='skynet.js')}}"></script>
+<div class="container">
+  <h1 class="center-align">SKYNET</h1>
   <div class=metanav>
-    <p>I'm where a nav would go</p>
   {% block body %}{% endblock %}
+  <!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
 </div>

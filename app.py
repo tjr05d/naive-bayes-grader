@@ -11,8 +11,10 @@ db = SQLAlchemy(app)
 @app.route('/grader/api/v1.0/responses', methods=['GET'])
 def get_responses():
     responses= Response.query.all()
+    categories = Category.query.all()
+    questions = Question.query.all()
     # jsonify({'responses' : prepare_index_json(Response)})
-    return render_template('show_responses.html', responses = responses)
+    return render_template('show_responses.html', responses = responses, categories = categories, questions= questions)
 
 
 @app.route('/grader/api/v1.0/responses/<int:response_id>', methods=['GET'])
@@ -22,15 +24,44 @@ def get_response(response_id):
         abort(404)
     return jsonify({'response': response.to_dict})
 
+#experimental post route to classify a response item
+@app.route('/grader/classify', methods=['POST'])
+def classify_response():
+    if not request.form or not 'answer' in request.form:
+        abort(400)
+    question_responses= db.session.query(Response).filter(Response.questions_id==request.form['question_id'])
+    training_responses = [data_item.tim_to_dict for data_item in question_responses]
+    #empty array to put the training tuples in
+    training_data = []
+    #loop to take the info from the list and create the tuples that go in the training data array
+    for data_point in training_responses:
+        training_data.append((data_point["answer"], data_point["categories_id"]))
+    #creates the classifier for the response that is recieved
+    question = NaiveBayesClassifier(training_data)
+    #classiifies the response into a category based on probability
+    category_decision = question.classify(request.form['answer'])
+    #get the category object that belongs to that response
+    category_object = Category.query.get(int(category_decision))
+    #gets the probability that the response falls in one of the categories
+    prob_cat = question.prob_classify(request.form['answer'])
+    #loop to return the prob that the response falls in each of the categories
+    cat_probabilities = []
+    #loop to get the probability of all the categories that exist for that classifier
+    for cat in question.labels():
+        cat_title = Category.query.get(int(cat)).title
+        cat_probabilities.append((cat_title, prob_cat.prob(cat)))
+    #return a hash with the category picked as well as the probabilities fo all the categories of the classifier
+    return jsonify({'category' : category_object.title, 'probabilities' : cat_probabilities}), 201
+
 @app.route('/grader/api/v1.0/responses', methods=['POST'])
 def create_response():
-    print(request.form['answer'])
+    print(request.form)
     if not request.form or not 'answer' in request.form:
         abort(400)
     response = Response(
         answer= request.form['answer'],
         active = False,
-        categories_id= int(request.form['category_id']),
+        categories_id= int(request.form['category']),
         questions_id= int(request.form['question_id'])
         )
     db.session.add(response)
