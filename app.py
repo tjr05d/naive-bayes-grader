@@ -53,6 +53,13 @@ def classify_response():
     #return a hash with the category picked as well as the probabilities fo all the categories of the classifier
     return jsonify({'category' : category_object.title, 'probabilities' : cat_probabilities}), 201
 
+@app.route('/grader/getcategories', methods=['POST'])
+def getcategories():
+    categories = Category.query.filter(Category.question_id==int(request.form['question_id']))
+    return jsonify([(cat.id, cat.title) for cat in categories])
+
+
+
 @app.route('/grader/api/v1.0/responses', methods=['POST'])
 def create_response():
     print(request.form)

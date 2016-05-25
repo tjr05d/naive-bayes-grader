@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
-  <form action="{{ url_for('create_response') }}" method=post class=add-response>
+  <form action="{{ url_for('classify_response') }}" method=post class=classify-response>
     <dl>
       <dt>Question:
         <select id="question" name=question>
@@ -12,10 +12,14 @@
       <dt>Answer:
         <textarea id="response_text" name=answer row="30"></textarea>
       </dl>
-      
+
         <div class="center-align">
           <button id="grade" class="btn-large waves-effect waves-light" type="submit">GRADE</button>
         </div>
-
+      </form>
       <p id="ajax-test"></p>
+      <p id="template-test"></p>
+
+      <select id="categories" name=category class= "initialized">
+      </select>
 {% endblock %}
