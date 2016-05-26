@@ -14,12 +14,22 @@
       </dl>
 
         <div class="center-align">
-          <button id="grade" class="btn-large waves-effect waves-light" type="submit">GRADE</button>
+          <button data-target="modal1" id="grade" class="btn-large waves-effect waves-light" type="submit">GRADE</button>
         </div>
       </form>
-      <p id="ajax-test"></p>
+      <!-- Modal Structure -->
+   <div id="modal1" class="modal">
+     <div class="modal-content">
+        <p id="ajax-test"></p>
+        <select id="categories" name=category class= "initialized">
+        </select>
+     </div>
+     <div id= "confirm-response" class="modal-footer">
+       <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+     </div>
+   </div>
+
       <p id="template-test"></p>
 
-      <select id="categories" name=category class= "initialized">
-      </select>
+
 {% endblock %}

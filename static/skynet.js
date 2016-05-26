@@ -1,9 +1,10 @@
 $(function() {
+  var classified_response = null;
   $('#question').material_select();
   $('#categories').hide();
   $('#grade').on('click', gradeResponse);
-
-
+  $('#grade').leanModal();
+  $('#confirm-response').on('click', createNewResponse);
 });
 
 function gradeResponse(event){
@@ -18,13 +19,13 @@ function gradeResponse(event){
       success: function(response) {
         console.log(response);
         appendResponse(response);
-        templateAppend(response);
         selectQuestion();
       },
       error: function(error) {
           console.log(error);
       }
   });
+
 }
 
 function appendResponse(response) {
@@ -39,20 +40,9 @@ function appendResponse(response) {
   };
 }
 
-
-function templateAppend(response) {
-  var option_html = "";
-
-  for(i = 0; i < response.probabilities.length; i++){
-    option_html.concat("<option>"+response.probabilities[i][0]+"</option>");
-  }
-  var template = "<div><select id='category'name='category'>"+ option_html+ "</select></div>"
-    $('#template-test').append(template);
-}
-
-function selectQuestion() {
+function selectQuestion(){
  var question = $('#question option:selected').val();
- console.log(question);
+
  $.ajax({
      url: '/grader/getcategories',
      data: {question_id: question},
@@ -60,6 +50,7 @@ function selectQuestion() {
      success: function(response) {
        console.log(response);
        addCategoryOpts(response);
+       classified_response = response;
      },
      error: function(error) {
          console.log(error);
@@ -75,5 +66,24 @@ function addCategoryOpts(categories){
    options+=("<option value=\"" +cat +"\">"+ categories[cat] + "</option>");
  };
 
- select.append(options).material_select().show();
+ select.append(options).material_select();
+}
+
+function createNewResponse(){
+  var answer = $('#response_text').val()
+  var question_id = $('#question').val()
+  var category = $('#categories').val()
+
+  $.ajax({
+      url: '/grader/create_response',
+      data: {answer: answer, category: category, question_id: question_id},
+      type: 'POST',
+      success: function(response) {
+        console.log(response);
+      },
+      error: function(error) {
+          console.log(error);
+      }
+  });
+
 }
