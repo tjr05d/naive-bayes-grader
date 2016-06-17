@@ -1,11 +1,22 @@
 from flask import Flask, request, jsonify, abort, make_response, json, render_template
 from flask.ext.sqlalchemy import SQLAlchemy
 from models import *
-from views import *
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/grader_api_dev'
 db = SQLAlchemy(app)
+
+
+#training area routes
+@app.route('/grader/api/v1.0/training', methods=['GET'])
+def training():
+    questions = Question.query.all()
+    return render_template('training.html', questions = questions)
+
+@app.route('/grader/training_question_responses', methods=['POST'])
+def get_training_question_responses():
+    responses = Response.query.filter(Response.questions_id==int(request.form['question_id']))
+    return jsonify([(response.id, response.answer) for response in responses])
 
 #responses routes
 @app.route('/grader/api/v1.0/responses', methods=['GET'])
@@ -67,11 +78,12 @@ def create_response():
         abort(400)
     response = Response(
         answer= request.form['answer'],
-        active = False,
+        role = None,
         categories_id= int(request.form['category']),
         questions_id= int(request.form['question_id'])
         )
     db.session.add(response)
+    response.improves_training_set()
     db.session.commit()
     return jsonify({'response': response.to_dict}), 201
 

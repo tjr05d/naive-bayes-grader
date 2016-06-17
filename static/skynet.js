@@ -1,20 +1,21 @@
 $(function() {
   var classified_response = null;
   $('#question').material_select();
+  $('#training_question').material_select();
   $('#categories').hide();
   $('#grade').on('click', gradeResponse);
   $('#grade').leanModal();
   $('#confirm-response').on('click', createNewResponse);
+  $('#training_question').on('change', trainingQuestion);
 });
 
 function gradeResponse(event){
   event.preventDefault();
   var answer = $('#response_text').val()
-  var category = $('#category').val()
   var question_id = $('#question').val()
   $.ajax({
       url: '/grader/classify',
-      data: {answer: answer, category: category, question_id: question_id},
+      data: {answer: answer, question_id: question_id},
       type: 'POST',
       success: function(response) {
         console.log(response);
@@ -86,4 +87,36 @@ function createNewResponse(){
       }
   });
 
+}
+
+function trainingQuestion(){
+  var training_question_id = $('#training_question').val();
+  console.log(training_question_id);
+
+  $.ajax({
+    url: '/grader/training_question_responses',
+    data: {question_id: training_question_id},
+    type: 'POST',
+    success: function(response) {
+      console.log(response);
+      populateTable(response);
+    },
+    error: function(error) {
+        console.log(error);
+    }
+  });
+
+  function populateTable(responses){
+    var tableRows = "";
+    var table = $('#response_table');
+
+    for( key in responses){
+      console.log(key)
+     tableRows+= "<tr><td>"+ key +"</td><td>"+ responses[key] + "</td><td>"+ "What??" +"</td></tr>";
+   };
+
+   table.append(tableRows);
+  }
+  //first be able to return all of the responses that are not classified already
+  //give the user a way to select or create a category for that response
 }

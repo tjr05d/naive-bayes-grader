@@ -76,18 +76,18 @@ class Category(db.Model, JsondModel):
 
 class Response(db.Model, JsondModel):
     __tablename__ = 'responses'
-    external_attrs = ['answer', 'categories_id', 'id', 'active', 'info', 'classify_response']
+    external_attrs = ['answer', 'categories_id', 'id', 'role', 'info', 'classify_response']
     dumb_ass_attrs= ['answer','categories_id', 'id']
 
     id = db.Column(db.Integer, primary_key=True)
     answer = db.Column(db.Text)
-    active = db.Column(db.Boolean)
+    role = db.Column(db.String()    )
     categories_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
     questions_id = db.Column(db.Integer, db.ForeignKey('questions.id'))
 
-    def __init__(self, answer, active, categories_id, questions_id):
+    def __init__(self, answer, role, categories_id, questions_id):
         self.answer = answer
-        self.active = False
+        self.role = role
         self.categories_id = categories_id
         self.questions_id = questions_id
 
@@ -100,21 +100,19 @@ class Response(db.Model, JsondModel):
 
     @property
     def classify_response(self):
-        #test data point to pass into the classify method
-        test_response= ("Something", "Correct")
-
         #pulls the training data from previous responses for this question
         # train = db.session.query(Response).filter(Response.questions_id==1)
-        question_responses= db.session.query(Response).filter(Response.questions_id==self.questions_id)
-        #prepare that data for the classifier by creating a list
-        training_responses = [data_item.tim_to_dict for data_item in question_responses]
-        #empty array to put the training tuples in
-        training_data = []
-        #loop to take the info from the list and create the tuples that go in the training data array
-        for data_point in training_responses:
-            training_data.append((data_point["answer"], data_point["categories_id"]))
-        #creates the classifier for the response that is recieved
-        question = NaiveBayesClassifier(training_data)
+        # question_responses= db.session.query(Response).filter(Response.questions_id==self.questions_id)
+        # #prepare that data for the classifier by creating a list
+        # training_responses = [data_item.tim_to_dict for data_item in question_responses]
+        # #empty array to put the training tuples in
+        # training_data = []
+        # #loop to take the info from the list and create the tuples that go in the training data array
+        # for data_point in training_responses:
+        #     training_data.append((data_point["answer"], data_point["categories_id"]))
+        # #creates the classifier for the response that is recieved
+        # question = NaiveBayesClassifier(training_data)
+        question = self.generate_classifier
         #classiifies the response into a category based on probability
         category_decision = question.classify(self.answer)
         #get the category object that belongs to that response
@@ -129,3 +127,34 @@ class Response(db.Model, JsondModel):
             cat_probabilities.append((cat_title, prob_cat.prob(cat)))
         #return a hash with the category picked as well as the probabilities fo all the categories of the classifier
         return {'category' : category_object.title, 'probabilities' : cat_probabilities}
+# "++++++++++++++++++++++++++++++++++++++++++++"
+#         def improves_training_set(self, test_data):
+#             #query the response table for responses that are used for test_data, these data points should be choosen by an instructor
+#             test_data = Response.query.filter(Response.role = "test" AND Response.question_id)
+#
+#              current_accuracy = self.classify_response
+#             #check the accuracy of the classifier without the new response added
+#             current_accuracy = classifier.accuracy(test_data)
+#             #add the current candidate that was just labeled to the classifier
+#             classifier.update(self)
+#             #check if the new dat_point improves the accuracy of the training set
+#             updated_accuracy = classifier.accuracy(test_data)
+#
+#             if updated_accuracy > current_accuracy:
+#                 self.role = "training"
+
+
+        def generate_classifier(self):
+            #pulls the training data from previous responses for this question
+            # train = db.session.query(Response).filter(Response.questions_id==1)
+            question_responses= db.session.query(Response).filter(Response.questions_id==self.questions_id)
+            #prepare that data for the classifier by creating a list
+            training_responses = [data_item.tim_to_dict for data_item in question_responses]
+            #empty array to put the training tuples in
+            training_data = []
+            #loop to take the info from the list and create the tuples that go in the training data array
+            for data_point in training_responses:
+                training_data.append((data_point["answer"], data_point["categories_id"]))
+            #creates the classifier for the response that is recieved
+            question = NaiveBayesClassifier(training_data)
+            return question

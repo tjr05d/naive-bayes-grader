@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block body %}
+<h6>Make me smarter please</h6>
+
+<div class="input-field col s12">
+  <dt>Question:
+    <select id ="training_question" name=training_question>
+      <option value= "" disabled selected>Select a Question</option>
+      {% for question in questions %}
+      <option value={{question.id}}>{{question.title}}</option>
+      {% endfor %}
+    </select>
+</div>
+<p>Take a look at the responses for this question</p>
+
+<table>
+  <thead>
+    <tr>
+      <th data-field="id">ID</th>
+      <th data-field="answer">Answer</th>
+      <th data-field="category">Category</th>
+    </tr>
+  </thead>
+
+  <tbody id="response_table">
+    <!--JS will insert the table rows -->
+  </tbody>
+</table>
+{% endblock %}
