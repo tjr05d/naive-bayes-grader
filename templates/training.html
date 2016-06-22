@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
-<h6>Make me smarter please</h6>
+<h4>Make me smarter please</h4>
 
 <div class="input-field col s12">
   <dt>Question:
@@ -16,4 +16,30 @@
   <div id="card">
   <!--JS will insert the questions cards here -->
   </div>
+
+<!-- select area to add the category options to a response -->
+  <select id ="test_cat" name=test_cat>
+  </select>
+
+<!-- form to add a category to the question based on the given response ... revealed by jquery-->
+  <div id= "cat_form" class="row">
+    <h4 class="form_header">New Category</h4>
+    <form class="col s12">
+      <div class="row">
+        <div class="input-field col s6">
+          <input id="title" type="text" class="validate">
+          <label for="title">Title</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="feedback" type="text" class="validate">
+          <label for="feedback">Feedback</label>
+        </div>
+      </div>
+    </form>
+    <a id="cat_form_submit" class="waves-effect waves-light btn">Submit</a>
+    <a id="cat_form_cancel" class="waves-effect waves-light btn">Cancel</a>
+  </div>
+
 {% endblock %}

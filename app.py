@@ -88,7 +88,7 @@ def create_response():
     return jsonify({'response': response.to_dict}), 201
 
 #categories routes
-@app.route('/grader/api/v1.0/categories', methods=['GET'])
+@app.route('/grader/categories', methods=['GET'])
 def get_categories():
     return jsonify({'categories' : prepare_index_json(Category)})
 
@@ -99,14 +99,14 @@ def get_category(category_id):
         abort(404)
     return jsonify({'category': category.to_dict})
 
-@app.route('/grader/api/v1.0/categories', methods=['POST'])
+@app.route('/grader/categories', methods=['POST'])
 def create_category():
-    if not request.json or not 'title' in request.json:
+    if not request.form or not 'title' in request.form:
         abort(400)
     category = Category(
-        title= request.json['title'],
-        feedback= request.json['feedback'],
-        question_id= int(request.json['question_id'])
+        title= request.form['title'],
+        feedback= request.form['feedback'],
+        question_id= int(request.form['question_id'])
         )
     db.session.add(category)
     db.session.commit()

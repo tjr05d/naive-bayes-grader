@@ -72,8 +72,8 @@ class Category(db.Model, JsondModel):
 
     @property
     def info(self):
-        return {'unit':self.question.unit.title, 'question': self.question.title}
-
+        # return {'unit':self.question.unit.title, 'question': self.question.title}
+        return {'question': self.question.title}
 class Response(db.Model, JsondModel):
     __tablename__ = 'responses'
     external_attrs = ['answer', 'categories_id', 'id', 'role', 'info', 'classify_response']
