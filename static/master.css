@@ -13,7 +13,7 @@ header {
 #main {
   flex: 1;
   display: flex;
-  flex-grow: 10;
+  flex-grow: 16;
   flex-direction: row;
   align-items: stretch;
   overflow: auto;
@@ -21,7 +21,7 @@ header {
 
 #left-side {
   flex-basis: 35%;
-  background-color: gray;
+  background-color: #bfbfbf;
   color: white;
   padding: 50px;
 }
@@ -32,7 +32,7 @@ header {
 }
 
 #response-main {
-  flex-grow: 10;
+  flex-grow: 16;
 }
 .card {
   marign: auto 0;
