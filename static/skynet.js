@@ -145,11 +145,12 @@ function trainingQuestion(){
                        '</div>',
                        '</div>',
                        '</div>',
-                       '<a id= "new_cat" class="waves-effect waves-light btn">Add Category </a>',
+                       '<a id= "new_cat" class="waves-effect waves-light btn">Add Category</a>',
                        '<a id="next_card" class="waves-effect waves-light btn">Next</a>']
      responseCards.push(material_card.join(""));
    };
    if(responseCards[0]){
+     $('#placeholder-screen').remove();
      card.empty();
      card.append(responseCards[0]);
    } else {
