@@ -1,45 +1,51 @@
 {% extends "layout.html" %}
 {% block body %}
-<h4>Make me smarter please</h4>
+<div id="main">
+  <div id="left-side">
+    <h5>MAKE ME SMARTER PLEASE :)</h5>
 
-<div class="input-field col s12">
-  <dt>Question:
-    <select id ="training_question" name=training_question>
-      <option value= "" disabled selected>Select a Question</option>
-      {% for question in questions %}
-      <option value={{question.id}}>{{question.title}}</option>
-      {% endfor %}
+    <div class="input-field col s12">
+        <select id ="training_question" name=training_question>
+          <option value= "" disabled selected>Select a Question</option>
+          {% for question in questions %}
+          <option value={{question.id}}>{{question.title}}</option>
+          {% endfor %}
+        </select>
+    </div>
+  </div>
+
+  <div id="right-side">
+    <div id="card">
+    <!--JS will insert the questions cards here -->
+    </div>
+
+  <!-- select area to add the category options to a response -->
+  <div id="test_cat_div">
+    <select id ="test_cat" name=test_cat>
     </select>
+  </div>
+
+
+  <!-- form to add a category to the question based on the given response ... revealed by jquery-->
+    <div id= "cat_form" class="row">
+      <h4 class="form_header">New Category</h4>
+      <form class="col s12">
+        <div class="row">
+          <div class="input-field col s6">
+            <input id="title" type="text" class="validate">
+            <label for="title">Title</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <input id="feedback" type="text" class="validate">
+            <label for="feedback">Feedback</label>
+          </div>
+        </div>
+      </form>
+      <a id="cat_form_submit" class="waves-effect waves-light btn">Submit</a>
+      <a id="cat_form_cancel" class="waves-effect waves-light btn">Cancel</a>
+    </div>
+  </div>
 </div>
-<p>Take a look at the responses for this question</p>
-
-  <div id="card">
-  <!--JS will insert the questions cards here -->
-  </div>
-
-<!-- select area to add the category options to a response -->
-  <select id ="test_cat" name=test_cat>
-  </select>
-
-<!-- form to add a category to the question based on the given response ... revealed by jquery-->
-  <div id= "cat_form" class="row">
-    <h4 class="form_header">New Category</h4>
-    <form class="col s12">
-      <div class="row">
-        <div class="input-field col s6">
-          <input id="title" type="text" class="validate">
-          <label for="title">Title</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="input-field col s12">
-          <input id="feedback" type="text" class="validate">
-          <label for="feedback">Feedback</label>
-        </div>
-      </div>
-    </form>
-    <a id="cat_form_submit" class="waves-effect waves-light btn">Submit</a>
-    <a id="cat_form_cancel" class="waves-effect waves-light btn">Cancel</a>
-  </div>
-
 {% endblock %}

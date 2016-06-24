@@ -5,19 +5,24 @@ $(function() {
   cardCounter = 1;
 //hide elements on pageload
   $('#cat_form').hide();
-//event listeners
+  $('#categories').hide();
+  $('#test_cat_div').hide();
+
+//add materialize elememts
   $('#question').material_select();
   $('#training_question').material_select();
-  $('#categories').hide();
-  $('#grade').on('click', gradeResponse);
+  $('#test_cat').material_select();
   $('#grade').leanModal();
+
+  //event listeners
+  $('#grade').on('click', gradeResponse);
   $('#confirm-response').on('click', createNewResponse);
   $('#training_question').on('change', trainingQuestion);
   $('body').on('click', '#next_card',  nextCard);
   $('body').on('click', '#new_cat', newCat);
   $('#cat_form_submit').on('click', submitCatForm);
 
-  $('#test_cat').material_select();
+
 });
 
 function gradeResponse(event){
@@ -125,8 +130,8 @@ function trainingQuestion(){
     for( key in responses){
       var material_card = ['<div class="row">',
                        '<div class="col s12 m6">',
-                       '<div class="card blue-grey darken-1">',
-                       '<div class="card-content white-text">',
+                       '<div class="card">',
+                       '<div class="card-content">',
                        '<span class="card-title">',
                        key,
                        '</span>',
@@ -136,12 +141,12 @@ function trainingQuestion(){
                        '<select id="add_cat" name=category></select>',
                        '</div>',
                        '<div class="card-action">',
-                       '<a id= "new_cat">Add Category</a>',
-                       '<a id="next_card">Next</a>',
                        '</div>',
                        '</div>',
                        '</div>',
-                       '</div>']
+                       '</div>',
+                       '<a id= "new_cat" class="waves-effect waves-light btn">Add Category </a>',
+                       '<a id="next_card" class="waves-effect waves-light btn">Next</a>']
      responseCards.push(material_card.join(""));
    };
    if(responseCards[0]){
@@ -159,9 +164,9 @@ function trainingQuestion(){
     // var appendCard = $('#add_cat');
     var appendCard = $('#test_cat');
     var questionSelector = $('#training_question option:selected').val();;
-    console.log(cardCounter);
     card.empty();
     appendCard.empty();
+    $('#test_cat_div').show();
     if(responseCards[cardCounter]){
     card.append(responseCards[cardCounter]);
     cardCounter += 1;

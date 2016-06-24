@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
+<div id="response-main" class="container">
   <form action="{{ url_for('classify_response') }}" method=post class=classify-response>
     <dl>
       <dt>Question:
@@ -31,5 +32,5 @@
 
       <p id="template-test"></p>
 
-
+</div>
 {% endblock %}
