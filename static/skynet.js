@@ -23,7 +23,7 @@ $(function() {
   $('body').on('click', '#next_card',  nextCard);
   // $('body').on('click', '#new-cat-button', newCat);
   $('#cat_form_submit').on('click', submitCatForm);
-
+  $('#cat_form_cancel').on('click', closeModal);
 
 });
 
@@ -200,6 +200,11 @@ function trainingQuestion(){
             console.log(error);
         }
     });
+  }
+
+  function closeModal(){
+    console.log("close modal");
+    $('.modal').closeModal();
   }
 
   //first be able to return all of the responses that are not classified already
