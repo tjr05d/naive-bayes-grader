@@ -6,7 +6,7 @@ $(function() {
 //hide elements on pageload
   $('#cat_form').hide();
   $('#categories').hide();
-  $('#test_cat_div').hide();
+  $('#response-menu').hide();
 
 //add materialize elememts
   $('#question').material_select();
@@ -77,9 +77,11 @@ function selectQuestion(questionSelector, appendSelector){
  });
 }
 
-function addCategoryOpts(categories, appendSelector){
+function addCategoryOpts(categories, appendSelector, placeholderText){
   var options = "";
   var select= appendSelector;
+
+  options += '<option value= "" disabled selected>Select a Category</option>'
 
   for(cat in categories){
    options+=("<option value=\"" +cat +"\">"+ categories[cat] + "</option>");
@@ -145,7 +147,6 @@ function trainingQuestion(){
                        '</div>',
                        '</div>',
                        '</div>',
-                       '<a id= "new_cat" class="waves-effect waves-light btn">Add Category</a>',
                        '<a id="next_card" class="waves-effect waves-light btn">Next</a>']
      responseCards.push(material_card.join(""));
    };
@@ -167,7 +168,7 @@ function trainingQuestion(){
     var questionSelector = $('#training_question option:selected').val();;
     card.empty();
     appendCard.empty();
-    $('#test_cat_div').show();
+    $('#response-menu').show();
     if(responseCards[cardCounter]){
     card.append(responseCards[cardCounter]);
     cardCounter += 1;

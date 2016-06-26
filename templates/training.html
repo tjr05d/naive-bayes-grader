@@ -15,15 +15,35 @@
   </div>
 
   <div id="right-side">
+    <div id= "response-menu">
+      <div id="test_cat_div">
+        <select id ="test_cat" name=test_cat>
+        </select>
+      </div>
+      <div id="new-cat-button"
+        <a id= "new_cat" class="btn-floating waves-effect waves-light"><i class="material-icons">add</i></a>
+    </div>
+      <div id="training-testing">
+        <div>
+          <input id="training" type="checkbox"  />
+          <label for="training">Training</label>
+        </div>
+        <div>
+         <input id="testing" type="checkbox" />
+         <label for="testing">Testing</label>
+       </div>
+   </div>
+   <div id="training-submit">
+     <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+     <i class="material-icons right">send</i>
+   </button>
+  </div>
+    </div>
     <div id="card">
     <!--JS will insert the questions cards here -->
     </div>
 
   <!-- select area to add the category options to a response -->
-  <div id="test_cat_div">
-    <select id ="test_cat" name=test_cat>
-    </select>
-  </div>
 
   <div id="placeholder-screen">
     <i class="material-icons large">android</i>
@@ -31,6 +51,7 @@
   </div>
 
   <!-- form to add a category to the question based on the given response ... revealed by jquery-->
+
     <div id= "cat_form" class="row">
       <h4 class="form_header">New Category</h4>
       <form class="col s12">

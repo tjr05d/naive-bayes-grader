@@ -23,16 +23,14 @@ header {
   flex-basis: 35%;
   background-color: #bfbfbf;
   color: white;
-  padding: 50px;
+  padding: 18px 50px;
 }
 
 #right-side {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   flex-basis: 65%;
-  padding: 50px;
 }
 
 #test_cat_div {
@@ -41,12 +39,38 @@ header {
 }
 
 #response-main {
+  display: flex;
+  flex-direction: row;
   flex-grow: 16;
 }
+
+#test_cat_div {
+  width: 45%;
+  margin: 18px;
+}
+
 .card {
-  marign: auto 0;
+  margin: auto 0;
+}
+
+#response-menu {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  box-shadow: 2px 2px 5px #888888;
+}
+
+#new-cat-button {
+  margin: 18px;
+}
+#training-testing {
+  margin: 10px;
+}
+
+#training-submit {
+margin: 18px auto;
 }
 
 #placeholder-screen {
-
+  margin: 20% auto;
 }
