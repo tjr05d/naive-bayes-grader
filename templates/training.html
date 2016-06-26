@@ -20,8 +20,8 @@
         <select id ="test_cat" name=test_cat>
         </select>
       </div>
-      <div id="new-cat-button"
-        <a id= "new_cat" class="btn-floating waves-effect waves-light"><i class="material-icons">add</i></a>
+      <div id="new-cat-button">
+        <a id= "new_cat" class="modal-trigger btn-floating waves-effect waves-light" href= "#cat-modal"><i class="material-icons">add</i></a>
     </div>
       <div id="training-testing">
         <div>
@@ -42,7 +42,7 @@
     <div id="card">
     <!--JS will insert the questions cards here -->
     </div>
-
+    <a id="next_card">Skip</a>
   <!-- select area to add the category options to a response -->
 
   <div id="placeholder-screen">
@@ -51,7 +51,11 @@
   </div>
 
   <!-- form to add a category to the question based on the given response ... revealed by jquery-->
+  </div>
+</div>
 
+<div id="cat-modal" class="modal">
+  <div class="modal-content">
     <div id= "cat_form" class="row">
       <h4 class="form_header">New Category</h4>
       <form class="col s12">
@@ -71,6 +75,7 @@
       <a id="cat_form_submit" class="waves-effect waves-light btn">Submit</a>
       <a id="cat_form_cancel" class="waves-effect waves-light btn">Cancel</a>
     </div>
+
   </div>
 </div>
 {% endblock %}

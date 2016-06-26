@@ -4,22 +4,24 @@ $(function() {
   responseCards = [];
   cardCounter = 1;
 //hide elements on pageload
-  $('#cat_form').hide();
+
   $('#categories').hide();
   $('#response-menu').hide();
+  $('#next_card').hide();
 
 //add materialize elememts
   $('#question').material_select();
   $('#training_question').material_select();
   $('#test_cat').material_select();
   $('#grade').leanModal();
+  $('.modal-trigger').leanModal();
 
   //event listeners
   $('#grade').on('click', gradeResponse);
   $('#confirm-response').on('click', createNewResponse);
   $('#training_question').on('change', trainingQuestion);
   $('body').on('click', '#next_card',  nextCard);
-  $('body').on('click', '#new_cat', newCat);
+  // $('body').on('click', '#new-cat-button', newCat);
   $('#cat_form_submit').on('click', submitCatForm);
 
 
@@ -130,30 +132,21 @@ function trainingQuestion(){
     var card = $('#card')
     var i = 0;
     for( key in responses){
-      var material_card = ['<div class="row">',
-                       '<div class="col s12 m6">',
-                       '<div class="card">',
-                       '<div class="card-content">',
-                       '<span class="card-title">',
-                       key,
-                       '</span>',
-                       '<p>',
-                       responses[key],
-                       '</p>',
-                       '<select id="add_cat" name=category></select>',
-                       '</div>',
-                       '<div class="card-action">',
-                       '</div>',
-                       '</div>',
-                       '</div>',
-                       '</div>',
-                       '<a id="next_card" class="waves-effect waves-light btn">Next</a>']
+      var material_card = ['<div id="response-id">',
+                          'Response Id: ',
+                          key,
+                          '</div>',
+                          '<div id="response-text">',
+                          responses[key],
+                          '</div>'
+                      ]
      responseCards.push(material_card.join(""));
    };
    if(responseCards[0]){
      $('#placeholder-screen').remove();
      card.empty();
      card.append(responseCards[0]);
+     $('#next_card').show();
    } else {
      card.empty();
      card.append("There are no responses to this question yet")

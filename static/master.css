@@ -29,7 +29,6 @@ header {
 #right-side {
   display: flex;
   flex-direction: column;
-  align-items: center;
   flex-basis: 65%;
 }
 
@@ -53,6 +52,10 @@ header {
   margin: auto 0;
 }
 
+#next_card {
+  margin: 50px auto;
+}
+
 #response-menu {
   width: 100%;
   display: flex;
@@ -73,4 +76,19 @@ margin: 18px auto;
 
 #placeholder-screen {
   margin: 20% auto;
+}
+
+#response-id {
+  font-size: 24px;
+  color: gray;
+  margin: 18px;
+}
+
+#response-text {
+  width: 70%;
+  height: 200px;
+  text-align: center;
+  margin: 0 auto;
+  padding-top: 80px;
+  background-color: #bfbfbf;
 }
