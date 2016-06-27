@@ -77,7 +77,7 @@ class Category(db.Model, JsondModel):
 class Response(db.Model, JsondModel):
     __tablename__ = 'responses'
     external_attrs = ['answer', 'categories_id', 'id', 'role', 'info', 'classify_response']
-    dumb_ass_attrs= ['answer','categories_id', 'id']
+    dumb_ass_attrs= ['answer','categories_id', 'id', 'role']
 
     id = db.Column(db.Integer, primary_key=True)
     answer = db.Column(db.Text)

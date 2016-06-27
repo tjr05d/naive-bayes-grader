@@ -18,6 +18,14 @@ def get_training_question_responses():
     responses = Response.query.filter(Response.questions_id==int(request.form['question_id']))
     return jsonify([(response.id, response.answer) for response in responses])
 
+@app.route('/grader/response_role', methods=['PUT'])
+def response_role():
+    response = Response.query.get(request.form['response_id'])
+    response.role = request.form['role']
+    response.categories_id= request.form['category_id']
+    db.session.commit()
+    return jsonify({'response': response.tim_to_dict}), 201
+
 #responses routes
 @app.route('/grader/api/v1.0/responses', methods=['GET'])
 def get_responses():

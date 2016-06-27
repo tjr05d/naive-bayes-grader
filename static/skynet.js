@@ -24,6 +24,7 @@ $(function() {
   // $('body').on('click', '#new-cat-button', newCat);
   $('#cat_form_submit').on('click', submitCatForm);
   $('#cat_form_cancel').on('click', closeModal);
+  $('#training-submit').on('click', submitTrainingResponse);
 
 });
 
@@ -132,9 +133,13 @@ function trainingQuestion(){
     var card = $('#card')
     var i = 0;
     for( key in responses){
-      var material_card = ['<div id="response-id">',
-                          'Response Id: ',
+      var material_card = ['<div id="response-id-div">',
+                          '<span id="response-id-title">',
+                          'Response ID: ',
+                          '</span>',
+                          '<span id="response-id">',
                           key,
+                          '</span>',
                           '</div>',
                           '<div id="response-text">',
                           responses[key],
@@ -203,8 +208,27 @@ function trainingQuestion(){
   }
 
   function closeModal(){
-    console.log("close modal");
     $('.modal').closeModal();
+  }
+
+  function submitTrainingResponse(){
+    var role = $('input:checked').val();
+    var responseId = $('span#response-id').text();
+    var categoryId = $('#test_cat option:selected').val();
+    console.log(categoryId);
+
+    $.ajax({
+        url: '/grader/response_role',
+        data: {response_id: responseId, role: role, category_id: categoryId},
+        type: 'PUT',
+        success: function(response) {
+          console.log(response);
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+    nextCard();
   }
 
   //first be able to return all of the responses that are not classified already
