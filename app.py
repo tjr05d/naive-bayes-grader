@@ -54,7 +54,7 @@ def get_response(response_id):
 def classify_response():
     if not request.form or not 'answer' in request.form:
         abort(400)
-    question_responses= db.session.query(Response).filter(Response.questions_id==request.form['question_id'])
+    question_responses= db.session.query(Response).filter((Response.questions_id==request.form['question_id']) & (Response.role == "training") & (Response.categories_id != None))
     training_responses = [data_item.tim_to_dict for data_item in question_responses]
     #empty array to put the training tuples in
     training_data = []
@@ -63,18 +63,19 @@ def classify_response():
         training_data.append((data_point["answer"], data_point["categories_id"]))
     #creates the classifier for the response that is recieved
     question = NaiveBayesClassifier(training_data)
-    print(question)
-    print(training_data)
     #classiifies the response into a category based on probability
     category_decision = question.classify(request.form['answer'])
+    print(category_decision)
+    print(training_data)
     #get the category object that belongs to that response
     category_object = Category.query.get(int(category_decision))
-    print(category_object)
     #gets the probability that the response falls in one of the categories
     prob_cat = question.prob_classify(request.form['answer'])
+    print(prob_cat)
     #loop to return the prob that the response falls in each of the categories
     cat_probabilities = []
     #loop to get the probability of all the categories that exist for that classifier
+    print(question.labels())
     for cat in question.labels():
         cat_title = Category.query.get(int(cat)).title
         cat_probabilities.append((cat_title, prob_cat.prob(cat)))
