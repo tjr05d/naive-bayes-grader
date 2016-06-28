@@ -20,10 +20,16 @@ def get_training_question_responses():
 
 @app.route('/grader/response_role', methods=['PUT'])
 def response_role():
-    response = Response.query.get(request.form['response_id'])
-    response.role = request.form['role']
-    response.categories_id= request.form['category_id']
+    # db.session.query(Response).filter_by(id=request.form['response_id']).update({role: u"%{request.form['role']}", categories_id: u"%{request.form['category_id']}" })
+
+    response_id= request.form['response_id']
+    new_role = request.form['role']
+    new_categories_id= int(request.form['category_id'])
+
+    db.session.query(Response).filter(Response.id==response_id).update({'role': new_role, 'categories_id': new_categories_id})
+
     db.session.commit()
+    response = Response.query.get(response_id)
     return jsonify({'response': response.tim_to_dict}), 201
 
 #responses routes
@@ -57,10 +63,13 @@ def classify_response():
         training_data.append((data_point["answer"], data_point["categories_id"]))
     #creates the classifier for the response that is recieved
     question = NaiveBayesClassifier(training_data)
+    print(question)
+    print(training_data)
     #classiifies the response into a category based on probability
     category_decision = question.classify(request.form['answer'])
     #get the category object that belongs to that response
     category_object = Category.query.get(int(category_decision))
+    print(category_object)
     #gets the probability that the response falls in one of the categories
     prob_cat = question.prob_classify(request.form['answer'])
     #loop to return the prob that the response falls in each of the categories
