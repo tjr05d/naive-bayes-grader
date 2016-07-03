@@ -80,7 +80,7 @@ def classify_response():
         cat_title = Category.query.get(int(cat)).title
         cat_probabilities.append((cat_title, prob_cat.prob(cat)))
     #return a hash with the category picked as well as the probabilities fo all the categories of the classifier
-    return jsonify({ 'question_id' :  request.form['question_id'], 'category' : category_object.title, 'probabilities' : cat_probabilities}), 201
+    return jsonify({ 'question_id' :  request.form['question_id'], 'category' : category_object.title, 'feedback' : category_object.feedback, 'probabilities' : cat_probabilities}), 201
 
 @app.route('/grader/getcategories', methods=['POST'])
 def getcategories():

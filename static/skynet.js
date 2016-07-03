@@ -45,7 +45,7 @@ function gradeResponse(event){
           console.log(error);
       }
   });
-
+  renderMarkdown(answer);
 }
 
 function appendResponse(response) {
@@ -267,7 +267,9 @@ function trainingQuestion(){
     nextCard();
   }
 
-
+  function renderMarkdown(input){
+    $('#content').append(marked(input));
+  }
 
   //first be able to return all of the responses that are not classified already
   //give the user a way to select or create a category for that response
