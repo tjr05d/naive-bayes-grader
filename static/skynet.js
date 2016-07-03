@@ -13,8 +13,6 @@ $(function() {
   $('#question').material_select();
   $('#training_question').material_select();
   $('#test_cat').material_select();
-  $('#grade').leanModal();
-  $('.modal-trigger').leanModal();
 
   //event listeners
   $('#grade').on('click', gradeResponse);
@@ -59,7 +57,45 @@ function appendResponse(response) {
   var probabilities = response.probabilities;
   for(i = 0; i < probabilities.length; i++){
     response_list.append("<p><bold>Category: </bold>"+ probabilities[i][0]+"<bold>  probability: </bold>"+ probabilities[i][1]+"</p>");
-  };
+  }
+  var chartArray = []
+  for(i = 0; i < probabilities.length; i++){
+    chartArray.push([probabilities[i][0], probabilities[i][1]])
+  }
+
+  console.log(chartArray);
+  $('#graph').highcharts({
+          chart: {
+              plotBackgroundColor: null,
+              plotBorderWidth: null,
+              plotShadow: false,
+              type: 'pie'
+          },
+          title: {
+              text: 'Category Probabilities'
+          },
+          tooltip: {
+              pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+          },
+          plotOptions: {
+              pie: {
+                  allowPointSelect: true,
+                  cursor: 'pointer',
+                  dataLabels: {
+                      enabled: true,
+                      format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                      style: {
+                          color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                      }
+                  }
+              }
+          },
+          series: [{
+              name: 'Category Probabilities',
+              colorByPoint: true,
+              data: chartArray
+          }]
+      });
 }
 
 function selectQuestion(questionSelector, appendSelector){
@@ -230,6 +266,8 @@ function trainingQuestion(){
     });
     nextCard();
   }
+
+
 
   //first be able to return all of the responses that are not classified already
   //give the user a way to select or create a category for that response
