@@ -92,3 +92,8 @@ margin: 18px auto;
   padding-top: 80px;
   background-color: #bfbfbf;
 }
+
+#re-classify {
+  width: 40%;
+  margin: 18px; 
+}

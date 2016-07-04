@@ -49,9 +49,9 @@ function gradeResponse(event){
 }
 
 function appendResponse(response) {
-  var response_list = $('#ajax-test');
-  var suggested_category = response.category;
-  var new_response = "<h6>Here's how I would grade this response: "+ suggested_category+"</h6>"
+  var response_list = $('#grading-');
+  var suggested_feedback = response.feedback;
+  var new_response = "<h6>Here's how I would grade this response: "+ suggested_feedback+"</h6>"
   response_list.append(new_response);
 
   var probabilities = response.probabilities;
@@ -120,7 +120,7 @@ function addCategoryOpts(categories, appendSelector, placeholderText){
   var options = "";
   var select= appendSelector;
 
-  options += '<option value= "" disabled selected>Select a Category</option>'
+  options += '<option value= "" disabled selected>Categorize</option>'
 
   for(cat in categories){
    options+=("<option value=\"" +cat +"\">"+ categories[cat] + "</option>");
@@ -204,13 +204,13 @@ function trainingQuestion(){
     appendCard.empty();
     $('#response-menu').show();
     if(responseCards[cardCounter]){
-    card.append(responseCards[cardCounter]);
-    cardCounter += 1;
-  } else {
-    responseCards = [];
-    cardCounter = 1;
-    card.append("Yay select another question!");
-  }
+      card.append(marked(responseCards[cardCounter]));
+      cardCounter += 1;
+    } else {
+      responseCards = [];
+      cardCounter = 1;
+      card.append("Yay select another question!");
+    }
     selectQuestion(questionSelector, appendCard);
   }
 
@@ -268,7 +268,12 @@ function trainingQuestion(){
   }
 
   function renderMarkdown(input){
-    $('#content').append(marked(input));
+    var markdownResponse = ['<div id="markdown-reponse" style= "background-color:white; color: blue; padding: 18px;">',
+                            marked(input),
+                            '</div>'
+                            ]
+    $('#response_text').replaceWith(markdownResponse.join(""));
+    $('#grade').hide();
   }
 
   //first be able to return all of the responses that are not classified already
