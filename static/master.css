@@ -95,5 +95,30 @@ margin: 18px auto;
 
 #re-classify {
   width: 40%;
-  margin: 18px; 
+  margin: 18px;
+}
+
+#user-reaction-buttons {
+  margin: 0 auto;
+}
+
+/*Feedback Card*/
+
+#feedback-card {
+  min-height: 150px;
+  width: 50%;
+  margin: 0 auto;
+  box-shadow: 2px 2px 5px #888888;
+}
+
+#feedback-header {
+  border: 2px;
+  padding: 5px;
+  text-align: center;
+  box-shadow: 2px 2px 5px #888888;
+}
+
+#feedback-content, p {
+  text-align: center;
+  padding: 10px;
 }

@@ -8,6 +8,7 @@ $(function() {
   $('#categories').hide();
   $('#response-menu').hide();
   $('#next_card').hide();
+  $('#user-reaction-buttons').hide();
 
 //add materialize elememts
   $('#question').material_select();
@@ -49,21 +50,29 @@ function gradeResponse(event){
 }
 
 function appendResponse(response) {
-  var response_list = $('#grading-');
-  var suggested_feedback = response.feedback;
-  var new_response = "<h6>Here's how I would grade this response: "+ suggested_feedback+"</h6>"
-  response_list.append(new_response);
+  var feedbackDiv = $('#grading-response');
+  var suggestedFeedback = ['<div id="feedback-card">',
+                            '<div id="feedback-header">',
+                            '<h6>',
+                            response.category,
+                            '</h6>',
+                            '</div>',
+                            '<div id="feedback-content>"',
+                            '<p>',
+                            marked(response.feedback),
+                            '</p>',
+                            '</div>',
+                            '</div>'
+                           ]
+  feedbackDiv.append(suggestedFeedback.join(""));
 
   var probabilities = response.probabilities;
-  for(i = 0; i < probabilities.length; i++){
-    response_list.append("<p><bold>Category: </bold>"+ probabilities[i][0]+"<bold>  probability: </bold>"+ probabilities[i][1]+"</p>");
-  }
+
   var chartArray = []
   for(i = 0; i < probabilities.length; i++){
     chartArray.push([probabilities[i][0], probabilities[i][1]])
   }
-
-  console.log(chartArray);
+  $('#user-reaction-buttons').show();
   $('#graph').highcharts({
           chart: {
               plotBackgroundColor: null,
@@ -274,6 +283,7 @@ function trainingQuestion(){
                             ]
     $('#response_text').replaceWith(markdownResponse.join(""));
     $('#grade').hide();
+    $('#markdown-remove').hide();
   }
 
   //first be able to return all of the responses that are not classified already
