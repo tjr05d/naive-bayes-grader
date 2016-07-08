@@ -14,13 +14,14 @@ $(function() {
   $('#question').material_select();
   $('#training_question').material_select();
   $('#test_cat').material_select();
+  $('#new-cat-button').leanModal(); 
 
   //event listeners
   $('#grade').on('click', gradeResponse);
   $('#confirm-response').on('click', createNewResponse);
   $('#training_question').on('change', trainingQuestion);
   $('body').on('click', '#next_card',  nextCard);
-  // $('body').on('click', '#new-cat-button', newCat);
+  $('body').on('click', '#new-cat-button', newCat);
   $('#cat_form_submit').on('click', submitCatForm);
   $('#cat_form_cancel').on('click', closeModal);
   $('#training-submit').on('click', submitTrainingResponse);
