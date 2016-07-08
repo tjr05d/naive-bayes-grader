@@ -14,7 +14,7 @@ $(function() {
   $('#question').material_select();
   $('#training_question').material_select();
   $('#test_cat').material_select();
-  $('#new-cat-button').leanModal(); 
+  $('#new-cat-button').leanModal();
 
   //event listeners
   $('#grade').on('click', gradeResponse);
@@ -198,6 +198,8 @@ function trainingQuestion(){
      card.empty();
      card.append(responseCards[0]);
      $('#next_card').show();
+     $('#response-menu').show();
+     populateCatSelect();
    } else {
      card.empty();
      card.append("There are no responses to this question yet")
@@ -209,10 +211,9 @@ function trainingQuestion(){
     //changed the append because the select will not populate on the materailize card, going to have to customize this
     // var appendCard = $('#add_cat');
     var appendCard = $('#test_cat');
-    var questionSelector = $('#training_question option:selected').val();;
+    // var questionSelector = $('#training_question option:selected').val();
     card.empty();
     appendCard.empty();
-    $('#response-menu').show();
     if(responseCards[cardCounter]){
       card.append(marked(responseCards[cardCounter]));
       cardCounter += 1;
@@ -221,10 +222,17 @@ function trainingQuestion(){
       cardCounter = 1;
       card.append("Yay select another question!");
     }
+    // selectQuestion(questionSelector, appendCard);
+    populateCatSelect();
+  }
+
+  function populateCatSelect(){
+    var appendCard = $('#test_cat');
+    var questionSelector = $('#training_question option:selected').val();
     selectQuestion(questionSelector, appendCard);
   }
 
-//Functions to create new categpries in the training area
+//Functions to create new categories in the training area
   function newCat(){
     $('#cat_form').show();
   }
