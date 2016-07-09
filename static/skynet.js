@@ -25,7 +25,7 @@ $(function() {
   $('#cat_form_submit').on('click', submitCatForm);
   $('#cat_form_cancel').on('click', closeModal);
   $('#training-submit').on('click', submitTrainingResponse);
-
+  $('#correct-response').on('click', clearResponse);
 });
 
 function gradeResponse(event){
@@ -206,94 +206,100 @@ function trainingQuestion(){
    }
   }
 
-  function nextCard(){
-    var card = $('#card')
-    //changed the append because the select will not populate on the materailize card, going to have to customize this
-    // var appendCard = $('#add_cat');
-    var appendCard = $('#test_cat');
-    // var questionSelector = $('#training_question option:selected').val();
-    card.empty();
-    appendCard.empty();
-    if(responseCards[cardCounter]){
-      card.append(marked(responseCards[cardCounter]));
-      cardCounter += 1;
-    } else {
-      responseCards = [];
-      cardCounter = 1;
-      card.append("Yay select another question!");
-    }
-    // selectQuestion(questionSelector, appendCard);
-    populateCatSelect();
+function nextCard(){
+  var card = $('#card')
+  //changed the append because the select will not populate on the materailize card, going to have to customize this
+  // var appendCard = $('#add_cat');
+  var appendCard = $('#test_cat');
+  // var questionSelector = $('#training_question option:selected').val();
+  card.empty();
+  appendCard.empty();
+  if(responseCards[cardCounter]){
+    card.append(marked(responseCards[cardCounter]));
+    cardCounter += 1;
+  } else {
+    responseCards = [];
+    cardCounter = 1;
+    card.append("Yay select another question!");
   }
+  // selectQuestion(questionSelector, appendCard);
+  populateCatSelect();
+}
 
-  function populateCatSelect(){
-    var appendCard = $('#test_cat');
-    var questionSelector = $('#training_question option:selected').val();
-    selectQuestion(questionSelector, appendCard);
-  }
+function populateCatSelect(){
+  var appendCard = $('#test_cat');
+  var questionSelector = $('#training_question option:selected').val();
+  selectQuestion(questionSelector, appendCard);
+}
 
 //Functions to create new categories in the training area
-  function newCat(){
-    $('#cat_form').show();
-  }
+function newCat(){
+  $('#cat_form').show();
+}
 
-  function cancelNewCat(){
-    $("#title").empty();
-    $("#feedback").empty();
-    $('#cat_form').hide();
-  }
+function cancelNewCat(){
+  $("#title").empty();
+  $("#feedback").empty();
+  $('#cat_form').hide();
+}
 
-  function submitCatForm(){
-    var title = $("#title").val();
-    var feedback = $("#feedback").val();
-    var question_id = $('#training_question').val();
+function submitCatForm(){
+  var title = $("#title").val();
+  var feedback = $("#feedback").val();
+  var question_id = $('#training_question').val();
 
-    $.ajax({
-        url: '/grader/categories',
-        data: {title: title, feedback: feedback, question_id: question_id},
-        type: 'POST',
-        success: function(response) {
-          console.log(response);
-        },
-        error: function(error) {
-            console.log(error);
-        }
-    });
-  }
+  $.ajax({
+      url: '/grader/categories',
+      data: {title: title, feedback: feedback, question_id: question_id},
+      type: 'POST',
+      success: function(response) {
+        console.log(response);
+      },
+      error: function(error) {
+          console.log(error);
+      }
+  });
+}
 
-  function closeModal(){
-    $('.modal').closeModal();
-  }
+function closeModal(){
+  $('.modal').closeModal();
+}
 
-  function submitTrainingResponse(){
-    var role = $('input:checked').val();
-    var responseId = $('span#response-id').text();
-    var categoryId = $('#test_cat option:selected').val();
-    console.log(categoryId);
+function submitTrainingResponse(){
+  var role = $('input:checked').val();
+  var responseId = $('span#response-id').text();
+  var categoryId = $('#test_cat option:selected').val();
+  console.log(categoryId);
 
-    $.ajax({
-        url: '/grader/response_role',
-        data: {response_id: responseId, role: role, category_id: categoryId},
-        type: 'PUT',
-        success: function(response) {
-          console.log(response);
-        },
-        error: function(error) {
-            console.log(error);
-        }
-    });
-    nextCard();
-  }
+  $.ajax({
+      url: '/grader/response_role',
+      data: {response_id: responseId, role: role, category_id: categoryId},
+      type: 'PUT',
+      success: function(response) {
+        console.log(response);
+      },
+      error: function(error) {
+          console.log(error);
+      }
+  });
+  nextCard();
+}
 
-  function renderMarkdown(input){
-    var markdownResponse = ['<div id="markdown-reponse" style= "background-color:white; color: blue; padding: 18px;">',
-                            marked(input),
-                            '</div>'
-                            ]
-    $('#response_text').replaceWith(markdownResponse.join(""));
-    $('#grade').hide();
-    $('#markdown-remove').hide();
-  }
+function renderMarkdown(input){
+  var markdownResponse = ['<div id="markdown-reponse" style= "background-color:white; color: blue; padding: 18px;">',
+                          marked(input),
+                          '</div>'
+                          ]
 
+  $('#response_text').replaceWith(markdownResponse.join(""));
+  $('#grade, #markdown-remove').hide();
+}
+
+function clearResponse(){
+  $('#response-input').load(document.URL +  ' #response-input');
+  $('#graph, #grading-response, #categories').empty();
+  $('#user-reaction-buttons').hide();
+  $('#grade').show();
+}
   //first be able to return all of the responses that are not classified already
   //give the user a way to select or create a category for that response

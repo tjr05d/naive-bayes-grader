@@ -15,19 +15,17 @@
           </select>
         </div>
 
-              <div class="row">
+              <div id = "response-input" class="row">
                 <div class="input-field col s12">
                   <textarea id="response_text" class="materialize-textarea"></textarea>
                   <label id="markdown-remove" for="response_text" class= "white-text">Paste response here... </label>
                 </div>
               </div>
-          <!-- <dt>Answer:
-            <textarea id="response_text" name=answer row="30"></textarea>
-          </dl> -->
 
-          <div class="center-align">
-            <button id="grade" class="btn-large waves-effect waves-light" type="submit">GRADE</button>
-          </div>
+              <div class="center-align">
+                <button id="grade" class="btn-large waves-effect waves-light" type="submit">GRADE</button>
+              </div>
+
         </div>
         </form>
       </div>
@@ -36,10 +34,10 @@
       <div id="right-side">
         <div id="graph" style="width:100%; height:300px;"></div>
 
-        <div id="grading-response"></div> 
+        <div id="grading-response"></div>
         <div id="user-reaction-buttons">
-          <a class="waves-effect waves-light btn"><i class="material-icons right">sentiment_satisfied</i>Nice! Thank You Skynet!</a>
-          <a class="waves-effect waves-light btn"><i class="material-icons right">sentiment_dissatisfied</i>Bad Skynet, your wrong</a>
+          <a id= "correct-response" class="waves-effect waves-light btn"><i class="material-icons right">sentiment_satisfied</i>Nice! Thank You Skynet!</a>
+          <a id= "incorrect-response" class="waves-effect waves-light btn"><i class="material-icons right">sentiment_dissatisfied</i>Bad Skynet, your wrong</a>
         </div>
 
         <div id="re-classify">

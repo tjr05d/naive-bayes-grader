@@ -98,20 +98,7 @@ class Response(db.Model, JsondModel):
     def info(self):
         return {'unit':self.question.unit.title, 'question': self.question.prompt}
 
-    @property
     def classify_response(self):
-        #pulls the training data from previous responses for this question
-        # train = db.session.query(Response).filter(Response.questions_id==1)
-        # question_responses= db.session.query(Response).filter(Response.questions_id==self.questions_id)
-        # #prepare that data for the classifier by creating a list
-        # training_responses = [data_item.tim_to_dict for data_item in question_responses]
-        # #empty array to put the training tuples in
-        # training_data = []
-        # #loop to take the info from the list and create the tuples that go in the training data array
-        # for data_point in training_responses:
-        #     training_data.append((data_point["answer"], data_point["categories_id"]))
-        # #creates the classifier for the response that is recieved
-        # question = NaiveBayesClassifier(training_data)
         question = self.generate_classifier
         #classiifies the response into a category based on probability
         category_decision = question.classify(self.answer)
@@ -128,7 +115,7 @@ class Response(db.Model, JsondModel):
         #return a hash with the category picked as well as the probabilities fo all the categories of the classifier
         return {'category' : category_object.title, 'probabilities' : cat_probabilities}
 # "++++++++++++++++++++++++++++++++++++++++++++"
-#         def improves_training_set(self, test_data):
+#         def improves_training_set(self, test_datsea):
 #             #query the response table for responses that are used for test_data, these data points should be choosen by an instructor
 #             test_data = Response.query.filter(Response.role = "test" AND Response.question_id)
 #
