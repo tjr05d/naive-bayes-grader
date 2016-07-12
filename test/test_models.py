@@ -28,5 +28,6 @@ class ResponseTest(unittest.TestCase):
     def test_response_has_classifier(self):
         print(self.response.classify_response)
         self.assertIsNot(self.response.classify_response, None)
+
 if __name__ == '__main__':
     unittest.main()

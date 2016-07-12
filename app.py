@@ -20,8 +20,6 @@ def get_training_question_responses():
 
 @app.route('/grader/response_role', methods=['PUT'])
 def response_role():
-    # db.session.query(Response).filter_by(id=request.form['response_id']).update({role: u"%{request.form['role']}", categories_id: u"%{request.form['category_id']}" })
-
     response_id= request.form['response_id']
     new_role = request.form['role']
     new_categories_id= int(request.form['category_id'])
@@ -54,33 +52,15 @@ def get_response(response_id):
 def classify_response():
     if not request.form or not 'answer' in request.form:
         abort(400)
-    question_responses= db.session.query(Response).filter((Response.questions_id==request.form['question_id']) & (Response.role == "training") & (Response.categories_id != None))
-    training_responses = [data_item.tim_to_dict for data_item in question_responses]
-    #empty array to put the training tuples in
-    training_data = []
-    #loop to take the info from the list and create the tuples that go in the training data array
-    for data_point in training_responses:
-        training_data.append((data_point["answer"], data_point["categories_id"]))
-    #creates the classifier for the response that is recieved
-    question = NaiveBayesClassifier(training_data)
-    #classiifies the response into a category based on probability
-    category_decision = question.classify(request.form['answer'])
-    print(category_decision)
-    print(training_data)
-    #get the category object that belongs to that response
-    category_object = Category.query.get(int(category_decision))
-    #gets the probability that the response falls in one of the categories
-    prob_cat = question.prob_classify(request.form['answer'])
-    print(prob_cat)
-    #loop to return the prob that the response falls in each of the categories
-    cat_probabilities = []
-    #loop to get the probability of all the categories that exist for that classifier
-    print(question.labels())
-    for cat in question.labels():
-        cat_title = Category.query.get(int(cat)).title
-        cat_probabilities.append((cat_title, prob_cat.prob(cat)))
-    #return a hash with the category picked as well as the probabilities fo all the categories of the classifier
-    return jsonify({ 'question_id' :  request.form['question_id'], 'category' : category_object.title, 'feedback' : category_object.feedback, 'probabilities' : cat_probabilities}), 201
+
+    response = Response(
+        answer= request.form['answer'],
+        role = None,
+        categories_id= None,
+        questions_id= int(request.form['question_id'])
+        )
+        
+    return response.classify_response()
 
 @app.route('/grader/getcategories', methods=['POST'])
 def getcategories():
@@ -101,7 +81,7 @@ def create_response():
         questions_id= int(request.form['question_id'])
         )
     db.session.add(response)
-    response.improves_training_set()
+    response.improves_training_set
     db.session.commit()
     return jsonify({'response': response.to_dict}), 201
 

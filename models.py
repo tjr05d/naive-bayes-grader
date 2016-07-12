@@ -1,4 +1,5 @@
 from app import db
+from flask import jsonify
 from flask.ext.sqlalchemy import SQLAlchemy
 from textblob.classifiers import NaiveBayesClassifier
 from textblob import TextBlob
@@ -74,6 +75,7 @@ class Category(db.Model, JsondModel):
     def info(self):
         # return {'unit':self.question.unit.title, 'question': self.question.title}
         return {'question': self.question.title}
+    
 class Response(db.Model, JsondModel):
     __tablename__ = 'responses'
     external_attrs = ['answer', 'categories_id', 'id', 'role', 'info', 'classify_response']
@@ -96,10 +98,28 @@ class Response(db.Model, JsondModel):
 
     @property
     def info(self):
-        return {'unit':self.question.unit.title, 'question': self.question.prompt}
+        return {'unit':self.question.unit.title,
+                'question': self.question.prompt
+                }
+
+    def generate_classifier(self):
+        question_responses = Response.query.filter(
+            (Response.questions_id == self.questions_id) &
+            (Response.role == "training") &
+            (Response.categories_id != None))
+        #prepare that data for the classifier by creating a list
+        training_responses = [data_item.tim_to_dict for data_item in question_responses]
+        #empty array to put the training tuples in
+        training_data = []
+        #loop to take the info from the list and create the tuples that go in the training data array
+        for data_point in training_responses:
+            training_data.append((data_point["answer"], data_point["categories_id"]))
+        #creates the classifier for the response that is recieved
+        question = NaiveBayesClassifier(training_data)
+        return question
 
     def classify_response(self):
-        question = self.generate_classifier
+        question = self.generate_classifier()
         #classiifies the response into a category based on probability
         category_decision = question.classify(self.answer)
         #get the category object that belongs to that response
@@ -113,7 +133,12 @@ class Response(db.Model, JsondModel):
             cat_title = Category.query.get(int(cat)).title
             cat_probabilities.append((cat_title, prob_cat.prob(cat)))
         #return a hash with the category picked as well as the probabilities fo all the categories of the classifier
-        return {'category' : category_object.title, 'probabilities' : cat_probabilities}
+        return jsonify({'question_id' : self.questions_id,
+                        'category' : category_object.title,
+                        'feedback' : category_object.feedback,
+                        'probabilities' : cat_probabilities
+                        }), 201
+
 # "++++++++++++++++++++++++++++++++++++++++++++"
 #         def improves_training_set(self, test_datsea):
 #             #query the response table for responses that are used for test_data, these data points should be choosen by an instructor
@@ -129,19 +154,3 @@ class Response(db.Model, JsondModel):
 #
 #             if updated_accuracy > current_accuracy:
 #                 self.role = "training"
-
-
-        def generate_classifier(self):
-            #pulls the training data from previous responses for this question
-            # train = db.session.query(Response).filter(Response.questions_id==1)
-            question_responses= db.session.query(Response).filter(Response.questions_id==self.questions_id)
-            #prepare that data for the classifier by creating a list
-            training_responses = [data_item.tim_to_dict for data_item in question_responses]
-            #empty array to put the training tuples in
-            training_data = []
-            #loop to take the info from the list and create the tuples that go in the training data array
-            for data_point in training_responses:
-                training_data.append((data_point["answer"], data_point["categories_id"]))
-            #creates the classifier for the response that is recieved
-            question = NaiveBayesClassifier(training_data)
-            return question
