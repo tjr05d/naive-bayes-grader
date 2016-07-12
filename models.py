@@ -75,7 +75,7 @@ class Category(db.Model, JsondModel):
     def info(self):
         # return {'unit':self.question.unit.title, 'question': self.question.title}
         return {'question': self.question.title}
-    
+
 class Response(db.Model, JsondModel):
     __tablename__ = 'responses'
     external_attrs = ['answer', 'categories_id', 'id', 'role', 'info', 'classify_response']
@@ -117,6 +117,33 @@ class Response(db.Model, JsondModel):
         #creates the classifier for the response that is recieved
         question = NaiveBayesClassifier(training_data)
         return question
+
+    def improves_training_set(self, cat_decision):
+        testing_set = Response.query.filter(
+            (Response.questions_id == self.questions_id) &
+            (Response.role == "testing"))
+        print(testing_set)
+
+        classifier = self.generate_classifier()
+        #check the accuracy of the classifier without the new response added
+        current_accuracy = classifier.accuracy(testing_set)
+        #add the current candidate that was just labeled to the classifier
+        self.categories_id = cat_decision
+        classifier.update(self)
+        #check if the new dat_point improves the accuracy of the training set
+        updated_accuracy = classifier.accuracy(test_data)
+
+        if updated_accuracy > current_accuracy:
+            self.role = "training"
+            return jsonify({'message': "This made me smarter :)",
+                            'current_accuracy': current_accuracy,
+                            'updated_accuracy': updated_accuracy
+                            })
+        else:
+            return jsonify({'message': "This keep me dumb, like a dolphin:(",
+                            'current_accuracy': current_accuracy,
+                            'updated_accuracy': updated_accuracy
+                            })
 
     def classify_response(self):
         question = self.generate_classifier()
