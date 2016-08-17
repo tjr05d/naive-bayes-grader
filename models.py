@@ -13,23 +13,23 @@ class JsondModel(object):
     def tim_to_dict(self):
         return {key: getattr(self, key) for key in self.dumb_ass_attrs}
 
+# might not be needed
+# class Unit(db.Model, JsondModel):
+#     __tablename__ = 'units'
+#     external_attrs = ['title', 'description']
 
-class Unit(db.Model, JsondModel):
-    __tablename__ = 'units'
-    external_attrs = ['title', 'description']
+#     id = db.Column(db.Integer, primary_key=True)
+#     title = db.Column(db.String())
+#     description = db.Column(db.Text)
+#     questions = db.relationship('Question', backref='unit', lazy= 'dynamic')
 
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String())
-    description = db.Column(db.Text)
-    questions = db.relationship('Question', backref='unit', lazy= 'dynamic')
-
-    def __init__(self, title, description):
-        self.title = title
-        self.description = description
+#     def __init__(self, title, description):
+#         self.title = title
+#         self.description = description
 
 
-    def __repr__(self):
-        return '<id {}>'.format(self.id)
+#     def __repr__(self):
+#         return '<id {}>'.format(self.id)
 
 
 class Question(db.Model, JsondModel):

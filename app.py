@@ -21,7 +21,7 @@ def get_training_question_responses():
 #responses routes
 @app.route('/grader/api/v1.0/responses', methods=['GET'])
 def get_responses():
-    responses= Response.query.all()
+    responses = Response.query.all()
     categories = Category.query.all()
     questions = Question.query.all()
     # jsonify({'responses' : prepare_index_json(Response)})
@@ -40,16 +40,16 @@ def get_response(response_id):
 def classify_response():
     if not request.form or not 'answer' in request.form:
         abort(400)
-    question_responses= db.session.query(Response).filter(Response.questions_id==request.form['question_id'])
+    question_responses = db.session.query(Response).filter(Response.questions_id==request.form['question_id'])
     training_responses = [data_item.tim_to_dict for data_item in question_responses]
     #empty array to put the training tuples in
     training_data = []
     #loop to take the info from the list and create the tuples that go in the training data array
     for data_point in training_responses:
         training_data.append((data_point["answer"], data_point["categories_id"]))
-    #creates the classifier for the response that is recieved
+    #creates the classifier object/decorator for the response that is recieved
     question = NaiveBayesClassifier(training_data)
-    #classiifies the response into a category based on probability
+    #classifies the response into a category based on probability
     category_decision = question.classify(request.form['answer'])
     #get the category object that belongs to that response
     category_object = Category.query.get(int(category_decision))
