@@ -59,7 +59,7 @@ def classify_response():
         categories_id= None,
         questions_id= int(request.form['question_id'])
         )
-        
+
     return response.classify_response()
 
 @app.route('/grader/getcategories', methods=['POST'])
@@ -81,7 +81,7 @@ def create_response():
         questions_id= int(request.form['question_id'])
         )
     db.session.add(response)
-    response.improves_training_set
+    response.improves_training_set()
     db.session.commit()
     return jsonify({'response': response.to_dict}), 201
 

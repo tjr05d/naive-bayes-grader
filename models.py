@@ -121,17 +121,23 @@ class Response(db.Model, JsondModel):
     def improves_training_set(self, cat_decision):
         testing_set = Response.query.filter(
             (Response.questions_id == self.questions_id) &
-            (Response.role == "testing"))
+            (Response.role == "test"))
+            #need to create test set in the proper format to check the accuracy
+        print("++++++++++++++")
         print(testing_set)
+        print("++++++++++++++")
 
         classifier = self.generate_classifier()
         #check the accuracy of the classifier without the new response added
         current_accuracy = classifier.accuracy(testing_set)
+        print(current_accuracy)
         #add the current candidate that was just labeled to the classifier
         self.categories_id = cat_decision
-        classifier.update(self)
+        new_data = [(self.answer, cat_decision)]
+        classifier.update(new_data)
         #check if the new dat_point improves the accuracy of the training set
-        updated_accuracy = classifier.accuracy(test_data)
+        updated_accuracy = classifier.accuracy(testing_set)
+        print(updated_accuracy)
 
         if updated_accuracy > current_accuracy:
             self.role = "training"
@@ -155,6 +161,7 @@ class Response(db.Model, JsondModel):
         prob_cat = question.prob_classify(self.answer)
         #loop to return the prob that the response falls in each of the categories
         cat_probabilities = []
+        self.improves_training_set(category_decision)
         #loop to get the probability of all the categories that exist for that classifier
         for cat in question.labels():
             cat_title = Category.query.get(int(cat)).title
