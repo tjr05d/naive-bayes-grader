@@ -122,21 +122,24 @@ class Response(db.Model, JsondModel):
         testing_set = Response.query.filter(
             (Response.questions_id == self.questions_id) &
             (Response.role == "test"))
-            #need to create test set in the proper format to check the accuracy
-        print("++++++++++++++")
-        print(testing_set)
-        print("++++++++++++++")
+
+        test_responses = [data_item.tim_to_dict for data_item in testing_set]
+
+        testing_data = []
+
+        for data_point in test_responses:
+            testing_data.append((data_point["answer"], data_point["categories_id"]))
 
         classifier = self.generate_classifier()
         #check the accuracy of the classifier without the new response added
-        current_accuracy = classifier.accuracy(testing_set)
+        current_accuracy = classifier.accuracy(testing_data)
         print(current_accuracy)
         #add the current candidate that was just labeled to the classifier
         self.categories_id = cat_decision
         new_data = [(self.answer, cat_decision)]
         classifier.update(new_data)
         #check if the new dat_point improves the accuracy of the training set
-        updated_accuracy = classifier.accuracy(testing_set)
+        updated_accuracy = classifier.accuracy(testing_data)
         print(updated_accuracy)
 
         if updated_accuracy > current_accuracy:
@@ -172,19 +175,3 @@ class Response(db.Model, JsondModel):
                         'feedback' : category_object.feedback,
                         'probabilities' : cat_probabilities
                         }), 201
-
-# "++++++++++++++++++++++++++++++++++++++++++++"
-#         def improves_training_set(self, test_datsea):
-#             #query the response table for responses that are used for test_data, these data points should be choosen by an instructor
-#             test_data = Response.query.filter(Response.role = "test" AND Response.question_id)
-#
-#              current_accuracy = self.classify_response
-#             #check the accuracy of the classifier without the new response added
-#             current_accuracy = classifier.accuracy(test_data)
-#             #add the current candidate that was just labeled to the classifier
-#             classifier.update(self)
-#             #check if the new dat_point improves the accuracy of the training set
-#             updated_accuracy = classifier.accuracy(test_data)
-#
-#             if updated_accuracy > current_accuracy:
-#                 self.role = "training"
