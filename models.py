@@ -11,26 +11,10 @@ class JsondModel(object):
 
 #method to prepare data within the classify_response method
     @property
-    def tim_to_dict(self):
-        return {key: getattr(self, key) for key in self.dumb_ass_attrs}
+    def safe_to_dict(self):
+        return {key: getattr(self, key) for key in self.filler_attrs}
 
 # might not be needed
-# class Unit(db.Model, JsondModel):
-#     __tablename__ = 'units'
-#     external_attrs = ['title', 'description']
-
-#     id = db.Column(db.Integer, primary_key=True)
-#     title = db.Column(db.String())
-#     description = db.Column(db.Text)
-#     questions = db.relationship('Question', backref='unit', lazy= 'dynamic')
-
-#     def __init__(self, title, description):
-#         self.title = title
-#         self.description = description
-
-
-#     def __repr__(self):
-#         return '<id {}>'.format(self.id)
 
 
 class Question(db.Model, JsondModel):
@@ -79,7 +63,7 @@ class Category(db.Model, JsondModel):
 class Response(db.Model, JsondModel):
     __tablename__ = 'responses'
     external_attrs = ['answer', 'categories_id', 'id', 'role', 'info', 'classify_response']
-    dumb_ass_attrs= ['answer','categories_id', 'id', 'role']
+    filler_attrs = ['answer','categories_id', 'id', 'role']
 
     id = db.Column(db.Integer, primary_key=True)
     answer = db.Column(db.Text)
@@ -108,7 +92,7 @@ class Response(db.Model, JsondModel):
             (Response.role == "training") &
             (Response.categories_id != None))
         #prepare that data for the classifier by creating a list
-        training_responses = [data_item.tim_to_dict for data_item in question_responses]
+        training_responses = [data_item.safe_to_dict for data_item in question_responses]
         #empty array to put the training tuples in
         training_data = []
         #loop to take the info from the list and create the tuples that go in the training data array
@@ -123,24 +107,19 @@ class Response(db.Model, JsondModel):
             (Response.questions_id == self.questions_id) &
             (Response.role == "test"))
 
-        test_responses = [data_item.tim_to_dict for data_item in testing_set]
+        test_responses = [data_item.safe_to_dict for data_item in testing_set]
 
-        testing_data = []
-
-        for data_point in test_responses:
-            testing_data.append((data_point["answer"], data_point["categories_id"]))
+        testing_data = [(dp["answer"], dp["categories_id"]) for dp in test_responses]
 
         classifier = self.generate_classifier()
         #check the accuracy of the classifier without the new response added
         current_accuracy = classifier.accuracy(testing_data)
-        print(current_accuracy)
         #add the current candidate that was just labeled to the classifier
         self.categories_id = cat_decision
         new_data = [(self.answer, cat_decision)]
         classifier.update(new_data)
         #check if the new dat_point improves the accuracy of the training set
         updated_accuracy = classifier.accuracy(testing_data)
-        print(updated_accuracy)
 
         if updated_accuracy > current_accuracy:
             self.role = "training"

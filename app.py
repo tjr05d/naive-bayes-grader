@@ -15,14 +15,14 @@ def training():
 
 @app.route('/grader/training_question_responses', methods=['POST'])
 def get_training_question_responses():
-    responses = Response.query.filter(Response.questions_id==int(request.form['question_id']))
+    responses = Response.query.filter(Response.questions_id == int(request.form['question_id']))
     return jsonify([(response.id, response.answer) for response in responses])
 
 @app.route('/grader/response_role', methods=['PUT'])
 def response_role():
-    response_id= request.form['response_id']
+    response_id = request.form['response_id']
     new_role = request.form['role']
-    new_categories_id= int(request.form['category_id'])
+    new_categories_id = int(request.form['category_id'])
 
     db.session.query(Response).filter(Response.id==response_id).update({'role': new_role, 'categories_id': new_categories_id})
 
@@ -52,7 +52,7 @@ def get_response(response_id):
 def classify_response():
     if not request.form or not 'answer' in request.form:
         abort(400)
-<<<<<<< HEAD
+
     question_responses = db.session.query(Response).filter(Response.questions_id==request.form['question_id'])
     training_responses = [data_item.tim_to_dict for data_item in question_responses]
     #empty array to put the training tuples in
@@ -76,7 +76,6 @@ def classify_response():
         cat_probabilities.append((cat_title, prob_cat.prob(cat)))
     #return a hash with the category picked as well as the probabilities fo all the categories of the classifier
     return jsonify({ 'question_id' :  request.form['question_id'], 'category' : category_object.title, 'probabilities' : cat_probabilities}), 201
-=======
 
     response = Response(
         answer= request.form['answer'],
@@ -86,7 +85,6 @@ def classify_response():
         )
 
     return response.classify_response()
->>>>>>> aafeea79f982423ad4fc2050a255c66e934867b4
 
 @app.route('/grader/getcategories', methods=['POST'])
 def getcategories():
@@ -103,8 +101,8 @@ def create_response():
     response = Response(
         answer= request.form['answer'],
         role = None,
-        categories_id= int(request.form['category']),
-        questions_id= int(request.form['question_id'])
+        categories_id = int(request.form['category']),
+        questions_id = int(request.form['question_id'])
         )
     db.session.add(response)
     response.improves_training_set()
