@@ -1,15 +1,24 @@
 <!doctype html>
 <title>SKYNET</title>
-<!-- <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}"> -->
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='master.css') }}">
 <!-- Compiled and minified CSS -->
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+<!-- HighCharts CDN  -->
+<script src="http://code.highcharts.com/highcharts.js"></script>
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/highlight.min.js"></script>
+
+<script src="{{url_for('static', filename='markdown.js')}}"></script>
 <script src="{{url_for('static', filename='skynet.js')}}"></script>
-<div class="container">
-  <h1 class="center-align">SKYNET</h1>
-  <div class=metanav>
+
+<header>
+    <h3 class="center-align">SKYNET</h3>
+</header>
   {% block body %}{% endblock %}
   <!-- Compiled and minified JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
-</div>
