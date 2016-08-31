@@ -114,15 +114,20 @@ class Response(db.Model, JsondModel):
         classifier = self.generate_classifier()
         #check the accuracy of the classifier without the new response added
         current_accuracy = classifier.accuracy(testing_data)
+        print(current_accuracy)
         #add the current candidate that was just labeled to the classifier
         self.categories_id = cat_decision
         new_data = [(self.answer, cat_decision)]
+        print(classifier.show_informative_features(5))
         classifier.update(new_data)
+        print(classifier.show_informative_features(5))
         #check if the new dat_point improves the accuracy of the training set
         updated_accuracy = classifier.accuracy(testing_data)
-
+        print(updated_accuracy)
         if updated_accuracy > current_accuracy:
             self.role = "training"
+            db.session.add(self)
+            db.session.commit()
             return jsonify({'message': "This made me smarter :)",
                             'current_accuracy': current_accuracy,
                             'updated_accuracy': updated_accuracy
