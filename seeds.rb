@@ -86,8 +86,8 @@ created_responses = []
 student_responses.each do |answer|
    new_response = Response.create(answer: answer,
                                   role: nil,
-                                  categories_id: nil,
-                                  questions_id: new_question.id)
+                                  category_id: nil,
+                                  question_id: new_question.id)
   created_responses << new_response
   end
 

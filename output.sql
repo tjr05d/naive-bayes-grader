@@ -47,10 +47,10 @@ CREATE TABLE categories (
 ALTER TABLE categories OWNER TO whoisjose04;
 
 --
--- Name: categories_id_seq; Type: SEQUENCE; Schema: public; Owner: whoisjose04
+-- Name: category_id_seq; Type: SEQUENCE; Schema: public; Owner: whoisjose04
 --
 
-CREATE SEQUENCE categories_id_seq
+CREATE SEQUENCE category_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -58,13 +58,13 @@ CREATE SEQUENCE categories_id_seq
     CACHE 1;
 
 
-ALTER TABLE categories_id_seq OWNER TO whoisjose04;
+ALTER TABLE category_id_seq OWNER TO whoisjose04;
 
 --
--- Name: categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: whoisjose04
+-- Name: category_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: whoisjose04
 --
 
-ALTER SEQUENCE categories_id_seq OWNED BY categories.id;
+ALTER SEQUENCE category_id_seq OWNED BY categories.id;
 
 
 --
@@ -82,10 +82,10 @@ CREATE TABLE questions (
 ALTER TABLE questions OWNER TO whoisjose04;
 
 --
--- Name: questions_id_seq; Type: SEQUENCE; Schema: public; Owner: whoisjose04
+-- Name: question_id_seq; Type: SEQUENCE; Schema: public; Owner: whoisjose04
 --
 
-CREATE SEQUENCE questions_id_seq
+CREATE SEQUENCE question_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -93,13 +93,13 @@ CREATE SEQUENCE questions_id_seq
     CACHE 1;
 
 
-ALTER TABLE questions_id_seq OWNER TO whoisjose04;
+ALTER TABLE question_id_seq OWNER TO whoisjose04;
 
 --
--- Name: questions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: whoisjose04
+-- Name: question_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: whoisjose04
 --
 
-ALTER SEQUENCE questions_id_seq OWNED BY questions.id;
+ALTER SEQUENCE question_id_seq OWNED BY questions.id;
 
 
 --
@@ -110,8 +110,8 @@ CREATE TABLE responses (
     id integer NOT NULL,
     answer text,
     role character varying,
-    categories_id integer,
-    questions_id integer
+    category_id integer,
+    question_id integer
 );
 
 
@@ -176,14 +176,14 @@ ALTER SEQUENCE units_id_seq OWNED BY units.id;
 -- Name: id; Type: DEFAULT; Schema: public; Owner: whoisjose04
 --
 
-ALTER TABLE ONLY categories ALTER COLUMN id SET DEFAULT nextval('categories_id_seq'::regclass);
+ALTER TABLE ONLY categories ALTER COLUMN id SET DEFAULT nextval('category_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: whoisjose04
 --
 
-ALTER TABLE ONLY questions ALTER COLUMN id SET DEFAULT nextval('questions_id_seq'::regclass);
+ALTER TABLE ONLY questions ALTER COLUMN id SET DEFAULT nextval('question_id_seq'::regclass);
 
 
 --
@@ -217,10 +217,10 @@ COPY categories (id, title, feedback, question_id) FROM stdin;
 
 
 --
--- Name: categories_id_seq; Type: SEQUENCE SET; Schema: public; Owner: whoisjose04
+-- Name: category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: whoisjose04
 --
 
-SELECT pg_catalog.setval('categories_id_seq', 18, true);
+SELECT pg_catalog.setval('category_id_seq', 18, true);
 
 
 --
@@ -237,17 +237,17 @@ COPY questions (id, title, prompt, unit_id) FROM stdin;
 
 
 --
--- Name: questions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: whoisjose04
+-- Name: question_id_seq; Type: SEQUENCE SET; Schema: public; Owner: whoisjose04
 --
 
-SELECT pg_catalog.setval('questions_id_seq', 15, true);
+SELECT pg_catalog.setval('question_id_seq', 15, true);
 
 
 --
 -- Data for Name: responses; Type: TABLE DATA; Schema: public; Owner: whoisjose04
 --
 
-COPY responses (id, answer, role, categories_id, questions_id) FROM stdin;
+COPY responses (id, answer, role, category_id, question_id) FROM stdin;
 77	```javascript\r\nvar a = { one: 1, two: 2, three: 3, four: 4, five: 5 };\r\nfor (var key in a) { \r\nconsole.log(key + ' : ' + a[key]);\r\n}\r\n```	\N	\N	14
 84	```javascript\nvar a = { one: 1, two: 2, three: 3, four: 4, five: 5 };\nfor (var i in a) {\n  console.log(i + ": " + a[i]);\n}\n```	\N	\N	14
 86	```js\r\n\r\nvar a = { one: 1, two: 2, three: 3, four: 4, five: 5 };\r\n\r\nfor (i in a) {\r\n  console.log(i+ ":" + " "+a[i]);\r\n}\r\n\r\n\r\n```	\N	\N	14
@@ -387,19 +387,19 @@ ALTER TABLE ONLY questions
 
 
 --
--- Name: responses_categories_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: whoisjose04
+-- Name: responses_category_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: whoisjose04
 --
 
 ALTER TABLE ONLY responses
-    ADD CONSTRAINT responses_categories_id_fkey FOREIGN KEY (categories_id) REFERENCES categories(id);
+    ADD CONSTRAINT responses_category_id_fkey FOREIGN KEY (category_id) REFERENCES categories(id);
 
 
 --
--- Name: responses_questions_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: whoisjose04
+-- Name: responses_question_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: whoisjose04
 --
 
 ALTER TABLE ONLY responses
-    ADD CONSTRAINT responses_questions_id_fkey FOREIGN KEY (questions_id) REFERENCES questions(id);
+    ADD CONSTRAINT responses_question_id_fkey FOREIGN KEY (question_id) REFERENCES questions(id);
 
 
 --

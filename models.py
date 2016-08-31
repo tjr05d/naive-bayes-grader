@@ -62,20 +62,20 @@ class Category(db.Model, JsondModel):
 
 class Response(db.Model, JsondModel):
     __tablename__ = 'responses'
-    external_attrs = ['answer', 'categories_id', 'id', 'role', 'info', 'classify_response']
-    filler_attrs = ['answer','categories_id', 'id', 'role']
+    external_attrs = ['answer', 'category_id', 'id', 'role', 'info', 'classify_response']
+    filler_attrs = ['answer','category_id', 'id', 'role']
 
     id = db.Column(db.Integer, primary_key=True)
     answer = db.Column(db.Text)
     role = db.Column(db.String()    )
-    categories_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
-    questions_id = db.Column(db.Integer, db.ForeignKey('questions.id'))
+    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
+    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'))
 
-    def __init__(self, answer, role, categories_id, questions_id):
+    def __init__(self, answer, role, category_id, question_id):
         self.answer = answer
         self.role = role
-        self.categories_id = categories_id
-        self.questions_id = questions_id
+        self.category_id = category_id
+        self.question_id = question_id
 
     def __repr__(self):
         return '<id {}>'.format(self.id)
@@ -88,35 +88,35 @@ class Response(db.Model, JsondModel):
 
     def generate_classifier(self):
         question_responses = Response.query.filter(
-            (Response.questions_id == self.questions_id) &
+            (Response.question_id == self.question_id) &
             (Response.role == "training") &
-            (Response.categories_id != None))
+            (Response.category_id != None))
         #prepare that data for the classifier by creating a list
         training_responses = [data_item.safe_to_dict for data_item in question_responses]
         #empty array to put the training tuples in
         training_data = []
         #loop to take the info from the list and create the tuples that go in the training data array
         for data_point in training_responses:
-            training_data.append((data_point["answer"], data_point["categories_id"]))
+            training_data.append((data_point["answer"], data_point["category_id"]))
         #creates the classifier for the response that is recieved
         question = NaiveBayesClassifier(training_data)
         return question
 
     def improves_training_set(self, cat_decision):
         testing_set = Response.query.filter(
-            (Response.questions_id == self.questions_id) &
+            (Response.question_id == self.question_id) &
             (Response.role == "test"))
 
         test_responses = [data_item.safe_to_dict for data_item in testing_set]
 
-        testing_data = [(dp["answer"], dp["categories_id"]) for dp in test_responses]
+        testing_data = [(dp["answer"], dp["category_id"]) for dp in test_responses]
 
         classifier = self.generate_classifier()
         #check the accuracy of the classifier without the new response added
         current_accuracy = classifier.accuracy(testing_data)
         print(current_accuracy)
         #add the current candidate that was just labeled to the classifier
-        self.categories_id = cat_decision
+        self.category_id = cat_decision
         new_data = [(self.answer, cat_decision)]
         print(classifier.show_informative_features(5))
         classifier.update(new_data)
@@ -154,7 +154,7 @@ class Response(db.Model, JsondModel):
             cat_title = Category.query.get(int(cat)).title
             cat_probabilities.append((cat_title, prob_cat.prob(cat)))
         #return a hash with the category picked as well as the probabilities fo all the categories of the classifier
-        return jsonify({'question_id' : self.questions_id,
+        return jsonify({'question_id' : self.question_id,
                         'category' : category_object.title,
                         'feedback' : category_object.feedback,
                         'probabilities' : cat_probabilities

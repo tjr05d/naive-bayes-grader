@@ -34,8 +34,8 @@ def classify_response():
     response = Response(
         answer= request.form['answer'],
         role = None,
-        categories_id= None,
-        questions_id= int(request.form['question_id'])
+        category_id= None,
+        question_id= int(request.form['question_id'])
         )
     return response.classify_response()
 
@@ -52,8 +52,8 @@ def create_response():
     response = Response(
         answer= request.form['answer'],
         role = None,
-        categories_id = int(request.form['category']),
-        questions_id = int(request.form['question_id'])
+        category_id = int(request.form['category']),
+        question_id = int(request.form['question_id'])
         )
     db.session.add(response)
     response.improves_training_set()
@@ -118,16 +118,16 @@ def training():
 
 @app.route('/grader/training_question_responses', methods=['POST'])
 def get_training_question_responses():
-    responses = Response.query.filter(Response.questions_id == int(request.form['question_id']))
+    responses = Response.query.filter(Response.question_id == int(request.form['question_id']))
     return jsonify([(response.id, response.answer) for response in responses])
 
 @app.route('/grader/response_role', methods=['PUT'])
 def response_role():
     response_id = request.form['response_id']
     new_role = request.form['role']
-    new_categories_id = int(request.form['category_id'])
+    new_category_id = int(request.form['category_id'])
 
-    db.session.query(Response).filter(Response.id==response_id).update({'role': new_role, 'categories_id': new_categories_id})
+    db.session.query(Response).filter(Response.id==response_id).update({'role': new_role, 'category_id': new_category_id})
 
     db.session.commit()
     response = Response.query.get(response_id)

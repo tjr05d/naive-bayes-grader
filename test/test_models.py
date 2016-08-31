@@ -19,11 +19,11 @@ class ResponseTest(unittest.TestCase):
     def test_response_has_role(self):
         self.assertEqual(self.response.role, "training")
 
-    def test_response_has_categories_id(self):
-        self.assertEqual(self.response.categories_id, 1)
+    def test_response_has_category_id(self):
+        self.assertEqual(self.response.category_id, 1)
 
-    def test_response_has_questions_id(self):
-        self.assertEqual(self.response.questions_id, 1)
+    def test_response_has_question_id(self):
+        self.assertEqual(self.response.question_id, 1)
 
     def test_response_has_classifier(self):
         print(self.response.classify_response)
