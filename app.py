@@ -1,11 +1,11 @@
 import pdb
+from shared import *
 from flask import Flask, request, jsonify, abort, make_response, json, render_template
-from flask.ext.sqlalchemy import SQLAlchemy
 from models import *
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/grader_api_dev'
-db = SQLAlchemy(app)
+# app = Flask(__name__)
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/grader_api_dev'
+# db = SQLAlchemy(app)
 
 #responses routes
 @app.route('/grader/api/v1.0/responses', methods=['GET'])

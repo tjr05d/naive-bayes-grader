@@ -1,8 +1,8 @@
-from app import db
+from shared import db
 from flask import jsonify
-from flask.ext.sqlalchemy import SQLAlchemy
 from textblob.classifiers import NaiveBayesClassifier
 from textblob import TextBlob
+
 
 class JsondModel(object):
     @property
