@@ -16,7 +16,6 @@ class JsondModel(object):
 
 # might not be needed
 
-
 class Question(db.Model, JsondModel):
     __tablename__ = 'questions'
     external_attrs = ['title', 'prompt']
