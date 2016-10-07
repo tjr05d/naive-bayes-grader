@@ -13,7 +13,6 @@ def get_responses():
     responses = Response.query.all()
     categories = Category.query.all()
     questions = Question.query.all()
-    # jsonify({'responses' : prepare_index_json(Response)})
     return render_template('show_responses.html',
                             responses = responses,
                             categories = categories,
@@ -104,7 +103,6 @@ def create_question():
     question = Question(
         title= request.json['title'],
         prompt= request.json['prompt'],
-        unit_id= int(request.json['unit_id'])
         )
     db.session.add(question)
     db.session.commit()

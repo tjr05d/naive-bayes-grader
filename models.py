@@ -19,19 +19,17 @@ class JsondModel(object):
 
 class Question(db.Model, JsondModel):
     __tablename__ = 'questions'
-    external_attrs = ['title', 'prompt', 'unit_id']
+    external_attrs = ['title', 'prompt']
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String())
     prompt = db.Column(db.Text)
-    unit_id = db.Column(db.Integer, db.ForeignKey('units.id'))
     responses = db.relationship('Response', backref='question', lazy= 'dynamic')
     categories = db.relationship('Category', backref='question', lazy= 'dynamic')
 
-    def __init__(self, title, prompt, unit_id):
+    def __init__(self, title, prompt):
         self.title = title
         self.prompt = prompt
-        self.unit_id = unit_id
 
     def __repr__(self):
         return '<id {}>'.format(self.id)
@@ -57,7 +55,6 @@ class Category(db.Model, JsondModel):
 
     @property
     def info(self):
-        # return {'unit':self.question.unit.title, 'question': self.question.title}
         return {'question': self.question.title}
 
 class Response(db.Model, JsondModel):
@@ -82,9 +79,7 @@ class Response(db.Model, JsondModel):
 
     @property
     def info(self):
-        return {'unit':self.question.unit.title,
-                'question': self.question.prompt
-                }
+        return {'question': self.question.prompt}
 
     def generate_classifier(self):
         question_responses = Response.query.filter(
