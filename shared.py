@@ -1,3 +1,4 @@
+import os
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask import Flask, request, jsonify, abort, make_response, json, render_template
 
