@@ -69,7 +69,7 @@ def get_category(category_id):
 
 @app.route('/grader/categories', methods=['POST'])
 def create_category():
-    if not request.json or not 'title' in request.form:
+    if not request.json or not 'title' in request.json:
         abort(400)
     category = Category(
         title= request.json['title'],
