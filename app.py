@@ -72,9 +72,9 @@ def create_category():
     if not request.form or not 'title' in request.form:
         abort(400)
     category = Category(
-        title= request.form['title'],
-        feedback= request.form['feedback'],
-        question_id= int(request.form['question_id'])
+        title= request.json['title'],
+        feedback= request.json['feedback'],
+        question_id= int(request.json['question_id'])
         )
     db.session.add(category)
     db.session.commit()
