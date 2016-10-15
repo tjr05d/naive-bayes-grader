@@ -35,11 +35,11 @@ def test_response():
     db.session.add(response)
     db.session.commit()
     #query to return the current test set with the response added
-    current_set = Response.query.filter(
-                                        (Response.question_id ==request.json['question_id']) &
-                                        (Response.role == "test")
-                                        )
-    return jsonify({"response_added": response.to_dict, "test_set": current_set.to_dict}), 201
+    # current_set = Response.query.filter(
+    #                                     (Response.question_id ==request.json['question_id']) &
+    #                                     (Response.role == "test")
+    #                                     )
+    return jsonify({"response_added": response.to_dict}), 201
 
 #route to classify a response
 @app.route('/grader/classify', methods=['POST'])
