@@ -21,6 +21,26 @@ def get_response(response_id):
         abort(404)
     return jsonify({'response': response.to_dict})
 
+#route to recieve a request and create a response for a test or training set
+@app.route('/grader/test_set', methods=['POST'])
+def test_response():
+    if not request.json or not 'answer' in request.json:
+        abort(400)
+    response = Response(
+        answer= request.json['answer'],
+        role = "test",
+        category_id = int(request.json['category_id']),
+        question_id = int(request.json['question_id'])
+        )
+    db.session.add(response)
+    db.session.commit()
+    #query to return the current test set with the response added
+    current_set = Response.query.filter(
+                                        (Response.question_id == self.question_id) &
+                                        (Response.role == "test")
+                                        )
+    return jsonify({"response_added": response.to_dict}, "test_set": current_set.to_dict), 201
+
 #route to classify a response
 @app.route('/grader/classify', methods=['POST'])
 def classify_response():
@@ -69,7 +89,7 @@ def get_category(category_id):
 
 @app.route('/grader/categories', methods=['POST'])
 def create_category():
-    if not request.json or not 'title' in request.json:
+    if not request.json or not 'title' in request.j:
         abort(400)
     category = Category(
         title= request.json['title'],
