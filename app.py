@@ -19,7 +19,7 @@ def get_response(response_id):
     response = Response.query.get(response_id)
     if not response:
         abort(404)
-    return jsonify({'response': response.to_dict})
+    return jsonify({'response': response.safe_to_dict})
 
 #route to recieve a request and create a response for a test or training set
 @app.route('/grader/test_set', methods=['POST'])
