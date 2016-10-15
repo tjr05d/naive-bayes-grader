@@ -39,7 +39,7 @@ def test_response():
                                         (Response.question_id == self.question_id) &
                                         (Response.role == "test")
                                         )
-    return jsonify({"response_added": response.to_dict}, "test_set": current_set.to_dict), 201
+    return jsonify({"response_added": response.to_dict, "test_set": current_set.to_dict}), 201
 
 #route to classify a response
 @app.route('/grader/classify', methods=['POST'])
