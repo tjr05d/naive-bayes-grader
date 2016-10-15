@@ -23,7 +23,7 @@ def get_response(response_id):
 
 #route to recieve a request and create a response for a test or training set
 @app.route('/grader/test_set', methods=['POST'])
-def test_response():
+def test_set():
     if not request.json or not 'answer' in request.json:
         abort(400)
     response = Response(
@@ -39,7 +39,7 @@ def test_response():
     #                                     (Response.question_id ==request.json['question_id']) &
     #                                     (Response.role == "test")
     #                                     )
-    return jsonify({"response_added": response.to_dict}), 201
+    return jsonify({"response": response.to_dict}), 201
 
 #route to classify a response
 @app.route('/grader/classify', methods=['POST'])
