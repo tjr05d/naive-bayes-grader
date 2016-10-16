@@ -53,7 +53,7 @@ def create_training_set_response():
         )
         #check how many responses are in the current training set for this question
     question_responses = Response.query.filter(
-        (Response.question_id == self.question_id) &
+        (Response.question_id == response.question_id) &
         (Response.role == "training") &
         (Response.category_id != None))
     if question_responses.count() > 4:
