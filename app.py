@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify, abort, make_response, json, render_te
 from models import *
 
 #responses routes
-@app.route('/grader/api/v1.0/responses', methods=['GET'])
+@app.route('/grader/responses', methods=['GET'])
 def get_responses():
     responses = Response.query.all()
     categories = Category.query.all()
@@ -14,7 +14,7 @@ def get_responses():
                             categories = categories,
                             questions= questions)
 
-@app.route('/grader/api/v1.0/responses/<int:response_id>', methods=['GET'])
+@app.route('/grader/responses/<int:response_id>', methods=['GET'])
 def get_response(response_id):
     response = Response.query.get(response_id)
     if not response:
@@ -103,7 +103,7 @@ def create_response():
 def get_categories():
     return jsonify({'categories' : prepare_index_json(Category)})
 
-@app.route('/grader/api/v1.0/categories/<int:category_id>', methods=['GET'])
+@app.route('/grader/categories/<int:category_id>', methods=['GET'])
 def get_category(category_id):
     category = Category.query.get(category_id)
     if not category:
@@ -124,11 +124,11 @@ def create_category():
     return jsonify({'category': category.to_dict}), 201
 
 #Questions routes
-@app.route('/grader/api/v1.0/questions', methods=['GET'])
+@app.route('/grader/questions', methods=['GET'])
 def get_questions():
     return jsonify({'questions' : prepare_index_json(Question)})
 
-@app.route('/grader/api/v1.0/questions/<int:question_id>', methods=['GET'])
+@app.route('/grader/questions/<int:question_id>', methods=['GET'])
 def get_question(question_id):
     question = Question.query.get(question_id)
     if not question:
