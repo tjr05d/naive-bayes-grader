@@ -83,3 +83,55 @@ You likely will have an idea of the categories that you want to make. You likely
           'Content-type' => 'application/json'
           })
   ```
+
+  3. Now that we have the question created, the categories that will be decided upon for that question, and test set that will judge the accuracy of the classifier for that question. We need to create the training set that will be used to build the classifier for that question.
+
+  Creating the responses for the training set will be very similar to creating the test responses. The only difference being the endpoint that we send the response to.
+
+  ```ruby
+  answer = 'p "Hello world!"'
+  category_id = 1
+  question_id = 1
+
+  response = HTTParty.post("https://naive-bayes-grader.herokuapp.com/grader/training_set",
+        :body => {
+                'answer' => answer,
+                'category_id' => category_id,
+                'question_id' => question_id
+          }.to_json,
+        :headers => {
+          'Content-type' => 'application/json'
+          })
+  ```
+  If there are less than 5 responses in the training set, the training response will be added to the training set. If there are more, the response will be evaluated to determine if adding the response will improve the accuracy of the classifier or not.
+
+  4. Now we have created the question, it's decision categories, test set, and training set we have everything that we need to build a classifier. That means we are ready to start classifying submissions
+
+  Very similar to above, to classify a submission we send the response over to the endpoint `classify` with the only parameters being the students answer and the question id for the question that it belongs to:
+
+  ```ruby
+  answer = 'puts "Hello world!"'
+  question_id = 1
+
+  response = HTTParty.post("https://naive-bayes-grader.herokuapp.com/grader/classify",
+        :body => {
+                'answer' => answer,
+                'question_id' => question_id
+          }.to_json,
+        :headers => {
+          'Content-type' => 'application/json'
+          })
+  ```
+
+  A JSON response will be returned containing the decision information for the submitted response
+  ```js
+    {"question_id" :  "1",
+    "category": "Missing quotation marks",
+    "feedback" :"It looks like you are missing some punctuation, remember strings are denoted by using quotation marks. Please try again!",
+    "probabilities" : [
+                      "Missing quotation marks" : "92.0",
+                      "Correct" : "8.0"
+                      ]
+    }), 201
+    ```
+  With the information received it is then the to the clients discretion to act upon the results that are returned.

@@ -23,7 +23,7 @@ def get_response(response_id):
 
 #route to recieve a request and create a response for a test or training set
 @app.route('/grader/test_set', methods=['POST'])
-def test_set():
+def create_test_set_response():
     if not request.json or not 'answer' in request.json:
         abort(400)
     response = Response(
@@ -39,19 +39,41 @@ def test_set():
     #                                     (Response.question_id ==request.json['question_id']) &
     #                                     (Response.role == "test")
     #                                     )
-    print(response)
     return jsonify({'response': response.safe_to_dict}), 201
+
+@app.route('/grader/training_set', methods=['POST'])
+def create_training_set_response():
+    if not request.json or not 'answer' in request.json:
+        abort(400)
+    response = Response(
+        answer= request.json['answer'],
+        role = "training",
+        category_id = int(request.json['category_id']),
+        question_id = int(request.json['question_id'])
+        )
+        #check how many responses are in the current training set for this question
+    question_responses = Response.query.filter(
+        (Response.question_id == self.question_id) &
+        (Response.role == "training") &
+        (Response.category_id != None))
+    if question_responses.count() > 4:
+        return response.improves_training_set(), 201
+    else:
+        db.session.add(response)
+        db.session.commit()
+        message = "Training response added, there are currently less than 5 elements in the training set"
+        return jsonify({'message': message, 'response': response.safe_to_dict}), 201
 
 #route to classify a response
 @app.route('/grader/classify', methods=['POST'])
 def classify_response():
-    if not request.form or not 'answer' in request.form:
+    if not request.json or not 'answer' in request.json:
         abort(400)
     response = Response(
-        answer= request.form['answer'],
+        answer= request.json['answer'],
         role = None,
         category_id= None,
-        question_id= int(request.form['question_id'])
+        question_id= int(request.json['question_id'])
         )
     return response.classify_response()
 
@@ -113,7 +135,7 @@ def get_question(question_id):
         abort(404)
     return jsonify({'question': question.to_dict})
 
-@app.route('/grader/api/v1.0/questions', methods=['POST'])
+@app.route('/grader/questions', methods=['POST'])
 def create_question():
     if not request.json or not 'title' in request.json:
         abort(400)
