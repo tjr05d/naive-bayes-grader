@@ -56,7 +56,7 @@ def create_training_set_response():
         (Response.question_id == response.question_id) &
         (Response.role == "training") &
         (Response.category_id != None))
-    if question_responses.count() > 4:
+    if question_responses.count() > 10:
         return response.improves_training_set(response.category_id), 201
     else:
         db.session.add(response)
