@@ -97,7 +97,7 @@ class Response(db.Model, JsondModel):
         all_words = set(word.lower() for passage in train for word in word_tokenize(passage[0]))
         t = [({word: (word in word_tokenize(x[0])) for word in all_words}, x[1]) for x in train]
         question = NaiveBayesClassifier(train)
-        return question
+        return question, all_words
 
     def improves_training_set(self, cat_decision):
         testing_set = Response.query.filter(
@@ -136,7 +136,7 @@ class Response(db.Model, JsondModel):
                             })
 
     def classify_response(self):
-        question = self.generate_classifier()
+        question, all_words = self.generate_classifier()
         #classiifies the response into a category based on probability
         answer = {word.lower(): (word in word_tokenize(self.answer.lower())) for word in all_words}
         category_decision = question.classify(answer)

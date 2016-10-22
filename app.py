@@ -67,13 +67,13 @@ def create_training_set_response():
 #route to classify a response
 @app.route('/grader/classify', methods=['POST'])
 def classify_response():
-    if not request.json or not 'answer' in request.json:
+    if not request.form or not 'answer' in request.form:
         abort(400)
     response = Response(
-        answer= request.json['answer'],
+        answer= request.form['answer'],
         role = None,
         category_id= None,
-        question_id= int(request.json['question_id'])
+        question_id= int(request.form['question_id'])
         )
     return response.classify_response()
 
