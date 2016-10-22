@@ -1,5 +1,6 @@
 from shared import db
 from flask import jsonify
+from textblob.tokenizers import WordTokenizer
 from textblob.classifiers import NaiveBayesClassifier
 from textblob import TextBlob
 
@@ -90,8 +91,10 @@ class Response(db.Model, JsondModel):
         #empty array to put the training tuples in
         training_data = []
         #loop to take the info from the list and create the tuples that go in the training data array
+        tokenizer = WordTokenizer()
         for data_point in training_responses:
-            training_data.append((data_point["answer"], data_point["category_id"]))
+            token_answer = tokenizer.tokenizer(data_point["answer"], include_punc=True)
+            training_data.append((token_answer, data_point["category_id"]))
         #creates the classifier for the response that is recieved
         question = NaiveBayesClassifier(training_data)
         return question
@@ -135,11 +138,12 @@ class Response(db.Model, JsondModel):
     def classify_response(self):
         question = self.generate_classifier()
         #classiifies the response into a category based on probability
-        category_decision = question.classify(self.answer)
+        token_answer = tokenizer.tokenizer(self.answer, include_punc=True)
+        category_decision = question.classify(token_answer)
         #get the category object that belongs to that response
         category_object = Category.query.get(int(category_decision))
         #gets the probability that the response falls in one of the categories
-        prob_cat = question.prob_classify(self.answer)
+        prob_cat = question.prob_classify(token_answer)
         #loop to return the prob that the response falls in each of the categories
         cat_probabilities = []
         self.improves_training_set(category_decision)
